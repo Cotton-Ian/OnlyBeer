@@ -1,6 +1,6 @@
 # Projet MOBG5 
 
-## Application "l'amour est dans la binouze" (nom provisoire)
+## Application "OnlyBeer" | Slogan : "l'amour est dans la binouze" (nom provisoire)
 
 ### Description de l'application : 
 
