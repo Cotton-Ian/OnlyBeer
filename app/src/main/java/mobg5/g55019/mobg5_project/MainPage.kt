@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import mobg5.g55019.mobg5_project.databinding.FragmentMainPageBinding
 
@@ -18,7 +19,16 @@ class MainPage : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main_page, container, false)
+
+        disableBackButton()
+
         return binding.root
+    }
+
+    private fun disableBackButton() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            // Handle the back button event
+        }
     }
 
 }

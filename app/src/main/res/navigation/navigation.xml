@@ -13,7 +13,8 @@
         >
         <action
             android:id="@+id/action_loginFragment_to_mainPage"
-            app:destination="@id/mainPage" />
+            app:destination="@id/mainPage"
+            app:launchSingleTop="false" />
     </fragment>
     <fragment
         android:id="@+id/mainPage"
