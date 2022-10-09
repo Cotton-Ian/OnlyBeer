@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
 import mobg5.g55019.mobg5_project.databinding.FragmentLoginBinding
 
 
@@ -23,10 +24,11 @@ class LoginFragment : Fragment() {
             R.layout.fragment_login, container, false)
 
         binding.loginButton.setOnClickListener {
-            if(isEmailValid()){
 
+            if(isEmailValid()){
                 toast = Toast.makeText(context, "Email is valid", Toast.LENGTH_SHORT)
                 toast.show()
+                view?.findNavController()?.navigate(R.id.action_loginFragment_to_mainPage)
             }
             else{
                 toast = Toast.makeText(context, "Email is not valid", Toast.LENGTH_SHORT)

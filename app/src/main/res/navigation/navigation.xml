@@ -10,6 +10,16 @@
         android:name="mobg5.g55019.mobg5_project.LoginFragment"
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login"
+        >
+        <action
+            android:id="@+id/action_loginFragment_to_mainPage"
+            app:destination="@id/mainPage" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainPage"
+        android:name="mobg5.g55019.mobg5_project.MainPage"
+        android:label="fragment_main_page"
+        tools:layout="@layout/fragment_main_page" />
 
-        />
+
 </navigation>

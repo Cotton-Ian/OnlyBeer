@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">MOBG5-Project</string>
+    <string name="app_name">OnlyBeer</string>
     <string name="loginTextview">Login</string>
     <string name="loginButton">Login</string>
     <string name="emailHint">Email</string>
+    <string name="TextviewMainpage">Bienvenue sur la page principale</string>
 </resources>
