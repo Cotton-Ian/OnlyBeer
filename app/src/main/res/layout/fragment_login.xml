@@ -1,0 +1,36 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/loginTextview"
+            android:layout_width="161dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="50sp"
+            android:text="@string/loginTextview"
+            android:textAlignment="center"
+            android:textSize="30sp" />
+
+        <EditText
+            android:id="@+id/emailArea"
+            android:layout_width="358dp"
+            android:layout_height="56dp"
+            android:layout_margin="30sp"
+            android:ems="10"
+            android:hint="@string/emailHint"
+            android:importantForAutofill="no"
+            android:inputType="textEmailAddress" />
+
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="356dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="30sp"
+            android:text="@string/loginButton" />
+    </LinearLayout>
+</layout>

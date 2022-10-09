@@ -1,36 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/loginTextview"
-            android:layout_width="161dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="50sp"
-            android:text="@string/loginTextview"
-            android:textAlignment="center"
-            android:textSize="30sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/emailArea"
-            android:layout_width="358dp"
-            android:layout_height="56dp"
-            android:layout_margin="30sp"
-            android:ems="10"
-            android:hint="@string/emailHint"
-            android:importantForAutofill="no"
-            android:inputType="textEmailAddress" />
+            <fragment
+                android:id="@+id/MyNavHostFragment"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:navGraph="@navigation/navigation"
+                app:defaultNavHost="true"
+                />
 
-        <Button
-            android:id="@+id/loginButton"
-            android:layout_width="356dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="30sp"
-            android:text="@string/loginButton" />
-    </LinearLayout>
+        </LinearLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
