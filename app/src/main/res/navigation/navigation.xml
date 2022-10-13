@@ -14,7 +14,9 @@
         <action
             android:id="@+id/action_loginFragment_to_mainPage"
             app:destination="@id/mainPage"
-            app:launchSingleTop="false" />
+            app:launchSingleTop="false"
+            app:popUpTo="@id/mainPage"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/mainPage"
