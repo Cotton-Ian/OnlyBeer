@@ -18,3 +18,6 @@ et une description brève. L'utilisateur peut liker et dislike la bière et une 
 - potentiellement une fonctionnalité qui permet à l'utilisateur d'ajouter des bières (il devrait envoyer une image + description) et la validation se fait par l'admin 
 -> 2 types de comptes ???
 
+## Auteur :
+**Cotton Ian** | g55019 | MOBG5
+
