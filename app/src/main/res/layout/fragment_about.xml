@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50sp"
                 android:layout_marginBottom="20sp"
-                android:text="Information sur le développeur :"
+                android:text="@string/devInfo"
                 android:textAlignment="center" />
 
             <TextView
@@ -27,21 +27,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20sp"
-                android:text="Nom : Cotton" />
+                android:text="@string/Name" />
 
             <TextView
                 android:id="@+id/prenomId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20sp"
-                android:text="Prénom : Ian" />
+                android:text="@string/first_name" />
 
             <TextView
                 android:id="@+id/matriculeId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20sp"
-                android:text="Matricule : 55019" />
+                android:text="@string/id" />
         </LinearLayout>
 
     </FrameLayout>

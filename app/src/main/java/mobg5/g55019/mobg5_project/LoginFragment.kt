@@ -41,7 +41,7 @@ class LoginFragment : Fragment() {
 
     private fun isEmailValid(): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(binding.emailArea.text).matches()
-
     }
+
 
 }

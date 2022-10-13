@@ -21,6 +21,11 @@
         android:name="mobg5.g55019.mobg5_project.MainPage"
         android:label="fragment_main_page"
         tools:layout="@layout/fragment_main_page" />
+    <fragment
+        android:id="@+id/about"
+        android:name="mobg5.g55019.mobg5_project.about"
+        android:label="about"
+        tools:layout="@layout/fragment_about"/>
 
 
 </navigation>
