@@ -14,7 +14,7 @@ dans nos favoris où on peut y voir une description plus détaillée ainsi que l
 - Système de like/dislike via swipe et/ou par bouton
 - Page contenant les favoris (bières likées).
 - Page détaillées de la bière avec une description plus précise ainsi que la position des bars qui nous permettent d'y gouter.   
-- Page avec les paramètres pour se déconnecter, les réglages du gps,...
+- Page avec les paramètres pour se déconnecter, les réglages du gps,... (itération 2)
 - Via les paramètres, pouvoir faire une demande d'ajout de bière (itération 2)
 
 ### Fonctionnalités technique : 
@@ -26,7 +26,7 @@ dans nos favoris où on peut y voir une description plus détaillée ainsi que l
 - Utilisation de la gallerie de l'utilisateur (itération 2)
 - Utilisation de google ads / google play ads (itération 2)
 - Utilisation de l'appareil photo (itération 2)
-- Login via compte Google / Facebook
+- Login via compte Google / Facebook (itération 2)
 
 ### Prototype itération 1: 
 
