@@ -18,3 +18,10 @@ et une description brève. L'utilisateur peut liker et dislike la bière et une 
 - potentiellement une fonctionnalité qui permet à l'utilisateur d'ajouter des bières (il devrait envoyer une image + description) et la validation se fait par l'admin 
 -> 2 types de comptes ???
 
+### Prototype : 
+
+![alt text](https://media.discordapp.net/attachments/913918732647170078/1032994416455077898/unknown.png?width=936&height=670)
+
+![alt text](https://cdn.discordapp.com/attachments/913918732647170078/1032995664210165770/allpage.png)
+
+
