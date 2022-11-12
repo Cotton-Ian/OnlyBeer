@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -26,9 +28,9 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle? ): View? {
-
         binding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_login, container, false)
+        setUpSpinner()
         databaseCheck()
         binding.loginButton.setOnClickListener {
             if(isEmailValid()){
@@ -85,6 +87,36 @@ class LoginFragment : Fragment() {
         }
         else {
             println("Database WARNING : EXISTE déjà")
+        }
+    }
+
+    private fun setUpSpinner(){
+        val users = AppDatabase.getInstance(this.requireContext()).userDao().getAll()
+        val mails = mutableListOf<String>()
+        mails.add("--Choisir un mail existant--")
+        for (i in users){
+            mails.add(i.mail)
+        }
+
+        val adapter = ArrayAdapter<String>(this.requireContext(), android.R.layout.simple_spinner_item, mails)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinner.adapter = adapter
+        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (position != 0){
+                    binding.emailArea.setText(mails[position])
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+               //nothing to add
+            }
+
         }
     }
 

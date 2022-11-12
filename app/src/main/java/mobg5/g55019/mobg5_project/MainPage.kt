@@ -12,6 +12,8 @@ import mobg5.g55019.mobg5_project.databinding.FragmentMainPageBinding
 
 class MainPage : Fragment() {
 
+    //TODO : MVVM architecture & use LiveData
+
     lateinit var binding: FragmentMainPageBinding
 
     override fun onCreateView(
