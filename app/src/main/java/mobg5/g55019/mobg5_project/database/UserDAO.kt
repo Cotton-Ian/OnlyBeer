@@ -16,6 +16,10 @@ interface UserDAO {
     @Update
     fun update(user: User)
 
+    //Update la date de l'utilisateur
+    @Query("UPDATE user SET date = :date WHERE mail = :mail")
+    fun updateDate(mail: String, date: Long)
+
     @Insert
     fun insert(user: User)
 }
