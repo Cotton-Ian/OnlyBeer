@@ -15,21 +15,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-        nav(binding)
-    }
-
-    private fun nav(binding: ActivityMainBinding) {
-        drawerLayout = binding.drawerLayout
-        val navController = this.findNavController(R.id.MyNavHostFragment)
-        NavigationUI.setupWithNavController(binding.navView, navController)
-        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
 
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = this.findNavController(R.id.MyNavHostFragment)
-        return NavigationUI.navigateUp(navController, drawerLayout)
-    }
+
+
+
 
 
 }

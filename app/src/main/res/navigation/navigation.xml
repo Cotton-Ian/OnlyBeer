@@ -12,22 +12,19 @@
         tools:layout="@layout/fragment_login"
         >
         <action
-            android:id="@+id/action_loginFragment_to_mainPage"
-            app:destination="@id/mainPage"
-            app:launchSingleTop="false"
-            app:popUpTo="@id/mainPage"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
     </fragment>
     <fragment
-        android:id="@+id/mainPage"
-        android:name="mobg5.g55019.mobg5_project.screen.home.MainPage"
-        android:label="fragment_main_page"
-        tools:layout="@layout/fragment_main_page" />
-    <fragment
-        android:id="@+id/about"
-        android:name="mobg5.g55019.mobg5_project.screen.aboutInformation.about"
-        android:label="about"
-        tools:layout="@layout/fragment_about"/>
+        android:id="@+id/registerFragment"
+        android:name="mobg5.g55019.mobg5_project.screen.register.RegisterFragment"
+        android:label="RegisterFragment"
+        tools:layout="@layout/fragment_register"
+        >
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 
 
 </navigation>

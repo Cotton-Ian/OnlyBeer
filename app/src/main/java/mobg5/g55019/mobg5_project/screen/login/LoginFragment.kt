@@ -32,16 +32,20 @@ class LoginFragment : Fragment() {
         factory = LoginViewModelFactory(this.requireContext())
         viewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
 
-        setUpSpinner()
         binding.loginButton.setOnClickListener {
             if (viewModel.isEmailValid(binding.emailArea.text.toString())) {
                 Toast.makeText(context, "Email is valid", Toast.LENGTH_SHORT).show()
-                view?.findNavController()?.navigate(R.id.action_loginFragment_to_mainPage)
+                //Navigation ici
                 viewModel.hideKeyboard(this.requireActivity())
                 viewModel.databaseInsert(binding.emailArea.text.toString())
             } else {
                 Toast.makeText(context, "Email is not valid", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.RegisterTextViewButton.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_loginFragment_to_registerFragment)
+            // view?.findNavController()?.navigate(R.id.action_loginFragment_to_mainPage)
         }
 
         return binding.root
@@ -82,34 +86,5 @@ class LoginFragment : Fragment() {
     }
     */
 
-    private fun setUpSpinner() {
-        val users = viewModel.getUsers()
-        val mails = mutableListOf<String>()
-        mails.add("--Choisir un mail existant--")
-        for (i in users) {
-            mails.add(i.mail)
-        }
-
-        val adapter =
-            ArrayAdapter<String>(this.requireContext(), android.R.layout.simple_spinner_item, mails)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinner.adapter = adapter
-        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (position != 0) {
-                    binding.emailArea.setText(mails[position])
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                //nothing to add
-            }
-        }
-    }
 
 }

@@ -2,9 +2,8 @@
     <string name="app_name">OnlyBeer</string>
     <string name="loginTextview">Login</string>
     <string name="loginButton">Login</string>
-    <string name="emailHint">Email</string>
+    <string name="emailHint">Login or mail</string>
     <string name="TextviewMainpage">Bienvenue sur la page principale</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="devInfo">Information sur le développeur :</string>
     <string name="Name">Nom : Cotton</string>
@@ -24,4 +23,10 @@
     <string name="aboutMenu">About</string>
     <string name="menu">Menu</string>
     <string name="_1">+1</string>
+    <string name="register">Register</string>
+    <string name="mail">Mail</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="login">Login</string>
+    <string name="register2">Register</string>
 </resources>
