@@ -1,7 +1,8 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.application' //base + needed for firebase
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services' //needed for firebase
 }
 
 android {
@@ -52,8 +53,10 @@ dependencies {
 
     //Coroutines
     implementation "androidx.room:room-ktx:$room_version"
-
-
+    implementation "com.google.firebase:firebase-database"
+    implementation platform('com.google.firebase:firebase-bom:31.1.0') //Needed for firebase
+    implementation 'com.google.firebase:firebase-analytics-ktx' //Needed for firebase
+    implementation 'com.google.firebase:firebase-auth-ktx' //Needed for firebase authentification
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'

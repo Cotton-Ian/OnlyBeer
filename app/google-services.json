@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "524294407607",
+    "project_id": "mobg5-onlybeer",
+    "storage_bucket": "mobg5-onlybeer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524294407607:android:87276e6fde535d06b19432",
+        "android_client_info": {
+          "package_name": "mobg5.g55019.mobg5_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "524294407607-05n2a43l35f3sn9cnul9hm485jnfkav3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFEOjqfJIXPxKRDwMCFUA8Z4qv2E3_a8g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "524294407607-05n2a43l35f3sn9cnul9hm485jnfkav3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

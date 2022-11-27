@@ -8,13 +8,15 @@ buildscript {
         dataBindingCompilerVersion = gradleVersion // Always need to be the same.
     }
     repositories {
-        google()
+        google() //Need for firebase
         jcenter()
+        mavenCentral()  // Maven Central repository, needed for firebase
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$gradleVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
+        classpath 'com.google.gms:google-services:4.3.13'
     }
 }
 

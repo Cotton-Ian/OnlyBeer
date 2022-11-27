@@ -3,14 +3,12 @@ package mobg5.g55019.mobg5_project
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import mobg5.g55019.mobg5_project.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var drawerLayout: DrawerLayout
+    //TODO question  1 seul activity ou plusieurs (login, register, main) ?
+    //Si plusisuers quand créer une activity et quand un fragment ?q
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
