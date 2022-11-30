@@ -52,6 +52,7 @@ dependencies {
     //ksp "androidx.room:room-compiler:$room_version"
 
     //Coroutines
+    implementation "com.github.Yalantis.Koloda:"
     implementation "androidx.room:room-ktx:$room_version"
     implementation "com.google.firebase:firebase-database"
     implementation platform('com.google.firebase:firebase-bom:31.1.0') //Needed for firebase

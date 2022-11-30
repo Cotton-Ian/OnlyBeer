@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_swipeFragment"
+            app:destination="@id/swipeFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -25,5 +28,11 @@
             android:id="@+id/action_registerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/swipeFragment"
+        android:name="mobg5.g55019.mobg5_project.screen.home.SwipeFragment"
+        android:label="SwipeFragment"
+        tools:layout="@layout/fragment_swipe"
+        />
 
 </navigation>

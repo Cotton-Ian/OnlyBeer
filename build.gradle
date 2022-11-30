@@ -11,6 +11,7 @@ buildscript {
         google() //Need for firebase
         jcenter()
         mavenCentral()  // Maven Central repository, needed for firebase
+        maven{ url 'https://jitpack.io' } //Needed for tinderswipe
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$gradleVersion"
