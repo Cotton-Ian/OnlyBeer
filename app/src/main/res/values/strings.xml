@@ -29,4 +29,8 @@
     <string name="confirm_password">Confirm password</string>
     <string name="login">Login</string>
     <string name="register2">Register</string>
+    <string name="swipe">SWIPE</string>
+    <string name="favourite">FAVOURITE</string>
+    <string name="settings">SETTINGS</string>
+    <string name="onlybeer">Onlybeer</string>
 </resources>

@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" app:labelVisibilityMode="unlabeled">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto" app:labelVisibilityMode="unlabeled"
+    android:background="#FFFFFF"
+    app:itemIconTint="@android:color/white">
     <item
         android:id="@+id/swipeFragment"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_favorite_24"
-        android:title="SWIPE" />
+        android:title="@string/swipe"
+        />
     <item
-        android:id="@+id/favourite"
+        android:id="@+id/favouriteFragment"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_favorite_24"
-        android:title="FAVOURITE" />
+        android:title="@string/favourite" />
     <item
         android:id="@+id/settings"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_settings_24"
-        android:title="SETTINGS" />
+        android:title="@string/settings" />
 </menu>

@@ -33,6 +33,16 @@
         android:name="mobg5.g55019.mobg5_project.screen.home.SwipeFragment"
         android:label="SwipeFragment"
         tools:layout="@layout/fragment_swipe"
-        />
+        >
+        <action
+            android:id="@+id/action_swipeFragment_to_favouriteFragment"
+            app:destination="@id/favouriteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favouriteFragment"
+        android:name="mobg5.g55019.mobg5_project.screen.fav.FavouriteFragment"
+        android:label="FavouriteFragment"
+        tools:layout="@layout/fragment_favourite"
+        android:background="#FFFFFF"/>
 
 </navigation>

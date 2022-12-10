@@ -9,17 +9,17 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="ONLYBEER"
-            android:textSize="32sp"
-            android:textStyle="bold"
+            android:text="@string/onlybeer"
+            app:layout_constraintBottom_toTopOf="@+id/frameLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.218"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="#88FF00C0"/>
 
         <Button
             android:id="@+id/likeBtn"
@@ -30,7 +30,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/dislikeBtn" />
+            app:layout_constraintStart_toEndOf="@+id/dislikeBtn"
+            android:textColor="#FFFFFF"
+            android:background="#00E39B"/>
 
         <Button
             android:id="@+id/dislikeBtn"
@@ -41,12 +43,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/likeBtn"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="#FFFFFF"
+            android:background="#E82845"/>
 
         <FrameLayout
+            android:id="@+id/frameLayout"
             android:layout_width="385dp"
-            android:layout_height="634dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="64dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="64dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -59,6 +68,8 @@
                     android:id="@+id/empty_view"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:src="@drawable/empty_view"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
