@@ -1,6 +1,8 @@
 package mobg5.g55019.mobg5_project.screen.register
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +13,15 @@ import androidx.navigation.findNavController
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 class RegisterFragment : Fragment() {
 
@@ -42,9 +49,10 @@ class RegisterFragment : Fragment() {
                 auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity()) { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(context, "Register !", Toast.LENGTH_SHORT).show()
+                        addInDbForBeer(auth)
                         view?.findNavController()?.navigate(R.id.action_registerFragment_to_loginFragment)
                     } else {
-                        Toast.makeText(context, "This mail is already used !", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Error : " + task.exception!!.message , Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -67,5 +75,17 @@ class RegisterFragment : Fragment() {
             return false
         }
         return true
+    }
+
+    /**
+     * Quand un user s'inscrit, je lui crée un doc dans la collection user qui permettra de connaitre
+     * les bières qui like
+     */
+    private fun addInDbForBeer(auth: FirebaseAuth) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("User").document(auth.uid.toString())
+            .set(mapOf("Beers" to emptyList<String>()), SetOptions.merge())
+            .addOnSuccessListener { Log.d(ContentValues.TAG, "User added in collection") }
+            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error user collection", e) }
     }
 }

@@ -33,4 +33,6 @@
     <string name="favourite">FAVOURITE</string>
     <string name="settings">SETTINGS</string>
     <string name="onlybeer">Onlybeer</string>
+    <string name="like">like</string>
+    <string name="dislike">Dislike</string>
 </resources>

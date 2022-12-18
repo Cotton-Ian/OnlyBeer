@@ -9,9 +9,7 @@ data class Beer(
     val alcoholMin: Double,
     val alcoholMax: Double,
     val color: String,
-    val image: Int,
+    val imageUrl: String,
     val type: String,
-    val favourite: Boolean
-
 
 )

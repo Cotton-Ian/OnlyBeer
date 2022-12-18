@@ -1,63 +1,117 @@
 package mobg5.g55019.mobg5_project.screen.fav
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentFavouriteBinding
 import mobg5.g55019.mobg5_project.model.Beer
 
 class FavouriteFragment : Fragment() {
     private lateinit var binding: FragmentFavouriteBinding
+    private var beers = mutableListOf<Beer>()
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val beers = getListOfBeer()
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourite,container , false)
-
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = BeerAdapter(beers)
-        }
-
+        //getListOfBeer()
+        getDataFromDatabaseUser()
         return binding.root
     }
 
-    private fun getListOfBeer(): List<Beer> {
-        return listOf(
-            Beer(
-                name = "Duvel",
-                brewery = "Brouwerij Duvel Moortgat",
-                country = "Belgique",
-                shortDescription = "Bière blonde belge",
-                longDescription = "La Duvel est une bière blonde belge, brassée depuis 1923 par la brasserie Duvel Moortgat. Elle est caractérisée par sa forte teneur en alcool (8,5 %) et par sa mousse abondante et crémeuse. La Duvel est considérée comme l'une des meilleures bières belges.",
-                alcoholMin = 8.5,
-                alcoholMax = 8.5,
-                color = "Blonde",
-                image = R.drawable.ic_baseline_image_24,
-                type = "Bière blonde",
-                favourite = true
-            ),
-            Beer(
-                name = "Guinness",
-                brewery = "Guinness Brewery",
-                country = "Irlande",
-                shortDescription = "Stout irlandais",
-                longDescription = "La Guinness est une stout irlandaise, brassée depuis 1759 par la brasserie Guinness. Elle est caractérisée par sa couleur noire opaque, sa mousse dense et crémeuse, et son goût malté et épicé. La Guinness est l'une des bières les plus célèbres au monde, avec des ventes annuelles d'environ 1,8 milliard de pintes.",
-                alcoholMin = 4.2,
-                alcoholMax = 4.2,
-                color = "Noire",
-                image = R.drawable.ic_baseline_image_24,
-                type = "Stout",
-                favourite = true
-            )
-        )
+    private fun getListOfBeer() {
+        val docRef = db.collection("/Beer")
+
+        // Créez une requête qui filtre les documents où le champ "favorite" est égal à false
+        val query = docRef.whereEqualTo("Favourite", true)
+        query.get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    beers.add(Beer(
+                        name = document["BeerName"].toString(),
+                        brewery = document["Brewery"].toString(),
+                        country = document["Country"].toString(),
+                        shortDescription = document["ShortDesc"].toString(),
+                        longDescription = document["LongDesc"].toString(),
+                        alcoholMin = document["AlcoholMin"].toString().toDouble(),
+                        alcoholMax = document["AlcoholMax"].toString().toDouble(),
+                        color = document["Color"].toString(),
+                        imageUrl = document["ImageUrl"].toString(),
+                        type = document["Type"].toString(),
+                    ))
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("testQuery", "Error getting documents.", exception)
+            }
+            .addOnCompleteListener {
+                Log.w("testQuery", "GG WP.")
+                Log.w("testQuery", beers.toString())
+                binding.recyclerView.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = BeerAdapter(beers)
+                }
+            }
+    }
+
+    private fun getDataFromDatabaseUser(){
+
+        val query = db.collection("/User").document(auth.uid.toString())
+        query.get()
+            .addOnSuccessListener { result ->
+                val beerList = result.data?.get("Beers") as MutableList<String>
+                getDataFromDatabaseBeer(beerList)
+            }
+            .addOnFailureListener { exception ->
+                Log.d("testQuery", "Error getting documents.", exception)
+            }
+    }
+
+    private fun getDataFromDatabaseBeer(beerNameList: MutableList<String>){
+        //java.lang.IllegalArgumentException: Invalid Query. A non-empty array is required for 'not_in' filters.
+        beerNameList.add(" ")
+
+        val query = db.collection("/Beer").whereIn("BeerName", beerNameList)
+        query.get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    beers.add(Beer(
+                        name = document["BeerName"].toString(),
+                        brewery = document["Brewery"].toString(),
+                        country = document["Country"].toString(),
+                        shortDescription = document["ShortDesc"].toString(),
+                        longDescription = document["LongDesc"].toString(),
+                        alcoholMin = document["AlcoholMin"].toString().toDouble(),
+                        alcoholMax = document["AlcoholMax"].toString().toDouble(),
+                        color = document["Color"].toString(),
+                        imageUrl = document["ImageUrl"].toString(),
+                        type = document["Type"].toString(),
+                    ))
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("testQuery", "Error getting documents.", exception)
+            }
+            .addOnCompleteListener {
+                Log.w("testQuery", "GG WP.")
+                Log.w("testQuery", beers.toString())
+                binding.recyclerView.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = BeerAdapter(beers)
+                }
+            }
     }
 }
