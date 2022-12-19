@@ -4,7 +4,7 @@ buildscript {
     ext{
         kotlin_version = '1.4.10'
         gradleVersion = '4.1.0'
-        navigationVersion = '2.3.0'
+        navigationVersion = '2.5.3'
         dataBindingCompilerVersion = gradleVersion // Always need to be the same.
     }
     repositories {
@@ -24,6 +24,8 @@ plugins {
     id 'com.android.application' version '7.3.0' apply false
     id 'com.android.library' version '7.3.0' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
+    id('androidx.navigation.safeargs.kotlin') version '2.5.3' apply false
+
 
 }
 

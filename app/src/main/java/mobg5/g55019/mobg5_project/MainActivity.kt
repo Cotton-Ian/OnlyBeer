@@ -12,12 +12,6 @@ import mobg5.g55019.mobg5_project.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
-    /**
-     *  TODO : récupérer l'id de chaque user, créer une collection Beer/UserID
-     *  pour chaque user, faire une liste avec toutes les bières favourites
-     */
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)

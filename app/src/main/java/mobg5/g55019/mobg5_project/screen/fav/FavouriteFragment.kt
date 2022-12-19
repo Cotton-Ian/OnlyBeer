@@ -28,6 +28,7 @@ class FavouriteFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourite,container , false)
         //getListOfBeer()
+        beers.clear() //To avoid duplicate after going back from information fragment
         getDataFromDatabaseUser()
         return binding.root
     }

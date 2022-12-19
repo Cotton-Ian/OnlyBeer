@@ -1,5 +1,7 @@
 package mobg5.g55019.mobg5_project.model
 
+import java.io.Serializable
+
 data class Beer(
     val name: String,
     val brewery: String,
@@ -12,4 +14,4 @@ data class Beer(
     val imageUrl: String,
     val type: String,
 
-)
+) : Serializable
