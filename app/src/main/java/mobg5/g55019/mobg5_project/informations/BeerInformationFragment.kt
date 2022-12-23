@@ -1,19 +1,24 @@
 package mobg5.g55019.mobg5_project.informations
 
+import android.provider.Settings
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -22,9 +27,6 @@ import mobg5.g55019.mobg5_project.databinding.FragmentBeerInformationBinding
 import mobg5.g55019.mobg5_project.model.Beer
 import mobg5.g55019.mobg5_project.model.ColorModel
 
-
-//TODO : debug la navigation depuis cette page FIXED
-//C'est comme si le fragment était attaché à favouriteFragment
 class BeerInformationFragment : Fragment() {
     private lateinit var binding: FragmentBeerInformationBinding
     private lateinit var currentBeer : Beer
@@ -36,6 +38,7 @@ class BeerInformationFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_beer_information,container , false)
         setUpView()
+        setUpLocalisation()
 
         return binding.root
     }
@@ -46,15 +49,43 @@ class BeerInformationFragment : Fragment() {
     }
 
 
-    override fun onStop() {
-        super.onStop()
-        //val frag = activity?.supportFragmentManager?.findFragmentById(FavouriteFragment().id)
-        //activity?.supportFragmentManager?.beginTransaction()?.replace(this.id,frag!!)?.commit()
+    private fun setUpLocalisation(){
+        binding.locationButton.setOnClickListener {
 
-        //activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
-        //activity?.supportFragmentManager?.popBackStack()
-
+            val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                Toast.makeText(context, "Activer le GPS", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                val address = binding.beername.text.toString()
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=$address"))
+                intent.setPackage("com.google.android.apps.maps")
+                if (context?.let { it1 -> intent.resolveActivity(it1.packageManager) } != null) {
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(context, "Google Maps n'est pas installé sur cet appareil", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
+
+    /**
+     * val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+    // Demandez à l'utilisateur d'activer le GPS
+    AlertDialog.Builder(context)
+    .setTitle("Géolocalisation désactivée")
+    .setMessage("Voulez-vous activer la géolocalisation ?")
+    .setPositiveButton("Oui") { _, _ ->
+    // Redirigez l'utilisateur vers les paramètres de localisation
+    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+    }
+    .setNegativeButton("Non") { _, _ ->
+    // Annulez l'action
+    }
+    .show()
+    }*/
 
 
     private fun setUpView() {
