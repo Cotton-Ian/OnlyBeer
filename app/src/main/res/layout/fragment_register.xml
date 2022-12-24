@@ -8,12 +8,16 @@
 
         <EditText
             android:id="@+id/emailTF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_margin="32dp"
+            android:background="@drawable/custom_edittext"
             android:ems="10"
             android:hint="@string/mail"
             android:inputType="textEmailAddress"
+            android:paddingVertical="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -21,12 +25,17 @@
 
         <EditText
             android:id="@+id/pwdTF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_margin="32dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/custom_edittext"
             android:ems="10"
             android:hint="@string/password"
             android:inputType="textPassword"
+            android:paddingVertical="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,12 +43,17 @@
 
         <EditText
             android:id="@+id/pwdConfirmTF"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_margin="32dp"
             android:layout_marginTop="32dp"
+            android:background="@drawable/custom_edittext"
             android:ems="10"
             android:hint="@string/confirm_password"
             android:inputType="textPassword"
+            android:paddingVertical="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +66,9 @@
             android:layout_marginTop="64dp"
             android:text="@string/register2"
             android:textAlignment="center"
+            android:textColor="#DDFF0059"
             android:textSize="34sp"
+            android:fontFamily="@font/alfa_slab_one"
             app:flow_horizontalAlign="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
@@ -61,8 +77,11 @@
 
         <Button
             android:id="@+id/buttonRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+
+            android:background="@drawable/rounded_button_localisation"
+            android:layout_width="199dp"
+            android:layout_height="55dp"
+            android:layout_margin="30sp"
             android:text="Register"
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -71,6 +90,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pwdConfirmTF"
             app:layout_constraintVertical_bias="0.185" />
+
+        <TextView
+            android:id="@+id/seConnecterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Déjà inscrit ? Se connecter"
+            android:textColor="#DD989898"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,7 +1,13 @@
 package mobg5.g55019.mobg5_project.screen.login
 
 import android.content.ContentValues
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -48,7 +54,15 @@ class LoginFragment : Fragment() {
             }
         }
 
-        binding.RegisterTextViewButton.setOnClickListener {
+        val text = "Pas encore de compte ? S'inscrire"
+        val spannableString = SpannableString(text)
+        val startIndex = text.indexOf("S'inscrire")
+        val endIndex = startIndex + "S'inscrire".length
+        spannableString.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#DDFF0059")), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        binding.inscriptionTextview.text = spannableString
+
+        binding.inscriptionTextview.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_loginFragment_to_registerFragment)
         }
 

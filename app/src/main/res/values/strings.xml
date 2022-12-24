@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">OnlyBeer</string>
-    <string name="loginTextview">Login</string>
-    <string name="loginButton">Login</string>
-    <string name="emailHint">Login or mail</string>
+    <string name="loginTextview">Connexion</string>
+    <string name="loginButton">Connexion</string>
+    <string name="emailHint">Adresse mail</string>
     <string name="TextviewMainpage">Bienvenue sur la page principale</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="devInfo">Information sur le développeur :</string>
@@ -23,12 +23,12 @@
     <string name="aboutMenu">About</string>
     <string name="menu">Menu</string>
     <string name="_1">+1</string>
-    <string name="register">Register</string>
+    <string name="register">S\'inscrire</string>
     <string name="mail">Mail</string>
-    <string name="password">Password</string>
-    <string name="confirm_password">Confirm password</string>
+    <string name="password">Mot de passe</string>
+    <string name="confirm_password">Confirmation</string>
     <string name="login">Login</string>
-    <string name="register2">Register</string>
+    <string name="register2">Inscription</string>
     <string name="swipe">SWIPE</string>
     <string name="favourite">FAVORIS</string>
     <string name="settings">SETTINGS</string>

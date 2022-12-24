@@ -1,7 +1,13 @@
 package mobg5.g55019.mobg5_project.screen.register
 
 import android.content.ContentValues
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -39,6 +45,18 @@ class RegisterFragment : Fragment() {
         )
 
         auth = FirebaseAuth.getInstance()
+
+        val text = "Déjà inscrit ? Se connecter"
+        val spannableString = SpannableString(text)
+        val startIndex = text.indexOf("Se connecter")
+        val endIndex = startIndex + "Se connecter".length
+        spannableString.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#DDFF0059")), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        binding.seConnecterTextView.text = spannableString
+
+        binding.seConnecterTextView.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_registerFragment_to_loginFragment)
+        }
 
         binding.buttonRegister.setOnClickListener {
             if(informationValid()){
