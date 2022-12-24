@@ -1,14 +1,17 @@
 package mobg5.g55019.mobg5_project.screen.fav
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.marginBottom
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,6 +24,36 @@ class FavouriteFragment : Fragment() {
     private var beers = mutableListOf<Beer>()
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
+    private val monBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == ConnectivityManager.CONNECTIVITY_ACTION) {
+                val connectivityManager =
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val activeNetworkInfo = connectivityManager.activeNetworkInfo
+                if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
+                    beers.clear() //To avoid duplicate after going back from information fragment
+                    getDataFromDatabaseUser()
+                } else {
+
+                }
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Enregistrez le BroadcastReceiver pour recevoir les événements de changement de connectivité
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        context?.registerReceiver(monBroadcastReceiver, filter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Désenregistrez le BroadcastReceiver lorsque votre fragment est détruit
+        context?.unregisterReceiver(monBroadcastReceiver)
+    }
 
 
 

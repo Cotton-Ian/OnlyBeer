@@ -1,6 +1,7 @@
 package mobg5.g55019.mobg5_project.screen.home
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.ContentValues.TAG
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -19,6 +20,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentSwipeBinding
 import mobg5.g55019.mobg5_project.model.Beer
+import android.net.ConnectivityManager
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 
 class SwipeFragment : Fragment() {
 
@@ -28,6 +33,39 @@ class SwipeFragment : Fragment() {
     private val auth = FirebaseAuth.getInstance()
     private val SWIPE_THRESHOLD = 100
     private val SWIPE_VELOCITY_THRESHOLD = 100
+    private val monBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == ConnectivityManager.CONNECTIVITY_ACTION) {
+                val connectivityManager =
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val activeNetworkInfo = connectivityManager.activeNetworkInfo
+                if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
+                    getDataFromDatabaseUser()
+                    setUpLikeButton()
+                    setUpDislikeButton()
+                    setUpSwipe()
+                    setUpSmallConstraintLayout()
+                } else {
+                    displayNoInternet()
+                }
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Enregistrez le BroadcastReceiver pour recevoir les événements de changement de connectivité
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        context?.registerReceiver(monBroadcastReceiver, filter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Désenregistrez le BroadcastReceiver lorsque votre fragment est détruit
+        context?.unregisterReceiver(monBroadcastReceiver)
+    }
 
 
     override fun onCreateView(
@@ -41,13 +79,29 @@ class SwipeFragment : Fragment() {
         )
 
         setUpColor()
-        getDataFromDatabaseUser()
-        setUpLikeButton()
-        setUpDislikeButton()
-        setUpSwipe()
+        if(connexionInternetOn()){
+            getDataFromDatabaseUser()
+            setUpLikeButton()
+            setUpDislikeButton()
+            setUpSwipe()
+        }
+        else{
+            displayNoInternet()
+        }
 
 
         return binding.root
+    }
+
+    private fun connexionInternetOn(): Boolean {
+        val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetworkInfo
+        return activeNetwork != null && activeNetwork.isConnected
+    }
+
+    private fun displayNoInternet(){
+        binding.beerName.text = "Pas de connexion internet"
+        binding.shortDesc.text = "Veuillez vous connecter à internet pour pouvoir utiliser l'application"
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -275,10 +329,11 @@ class SwipeFragment : Fragment() {
     }
 
     private fun setUpSmallConstraintLayout(){
-
-        binding.shortDesc.text = beers[0].shortDescription
-        binding.beerName.text = beers[0].name
-        Glide.with(this).load(beers[0].imageUrl).into(binding.beerImage)
+        if(beers.size > 0){
+            binding.beerName.text = beers[0].name
+            binding.shortDesc.text = beers[0].shortDescription
+            Glide.with(this).load(beers[0].imageUrl).into(binding.beerImage)
+        }
     }
 
 
