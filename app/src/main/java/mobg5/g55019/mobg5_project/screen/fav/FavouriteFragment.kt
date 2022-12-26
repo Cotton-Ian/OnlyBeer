@@ -42,7 +42,6 @@ class FavouriteFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Enregistrez le BroadcastReceiver pour recevoir les événements de changement de connectivité
         val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         context?.registerReceiver(monBroadcastReceiver, filter)
@@ -63,8 +62,7 @@ class FavouriteFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourite,container , false)
         //getListOfBeer()
-        beers.clear() //To avoid duplicate after going back from information fragment
-        getDataFromDatabaseUser()
+
         return binding.root
     }
 
@@ -119,7 +117,6 @@ class FavouriteFragment : Fragment() {
     private fun getDataFromDatabaseBeer(beerNameList: MutableList<String>){
         //java.lang.IllegalArgumentException: Invalid Query. A non-empty array is required for 'not_in' filters.
         beerNameList.add(" ")
-
         val query = db.collection("/Beer").whereIn("BeerName", beerNameList)
         query.get()
             .addOnSuccessListener { result ->
