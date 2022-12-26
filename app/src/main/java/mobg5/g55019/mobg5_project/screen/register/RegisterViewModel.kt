@@ -22,7 +22,7 @@ class RegisterViewModel : ViewModel() {
     private var seConnecter : SpannableString
     private val mAccountCreated = MutableLiveData<Boolean>()
     private val mErrorMessage = MutableLiveData<String>()
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
+    //private var auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     init {
         val text = "Déjà inscrit ? Se connecter"
@@ -58,7 +58,7 @@ class RegisterViewModel : ViewModel() {
      * Quand un user s'inscrit, je lui crée un doc dans la collection user qui permettra de connaitre
      * les bières qui like
      */
-    fun addInDbForBeer() {
+    fun addInDbForBeer(auth : FirebaseAuth) {
         val db = FirebaseFirestore.getInstance()
         db.collection("User").document(auth.uid.toString())
             .set(mapOf("Beers" to emptyList<String>()), SetOptions.merge())
@@ -66,10 +66,11 @@ class RegisterViewModel : ViewModel() {
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error user collection", e) }
     }
 
-    fun createAccount(email: String?, password: String?) {
+    fun createAccount(email: String?, password: String?, auth: FirebaseAuth) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email!!, password!!)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    addInDbForBeer(auth)
                     mAccountCreated.setValue(true)
                 } else {
                     mErrorMessage.setValue(task.exception!!.message)
@@ -84,5 +85,7 @@ class RegisterViewModel : ViewModel() {
     fun getErrorMessage(): LiveData<String> {
         return mErrorMessage
     }
+
+
 
 }
