@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentRegisterBinding
@@ -33,6 +34,7 @@ class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var viewModel : RegisterViewModel
 
 
     override fun onCreateView(
@@ -44,6 +46,7 @@ class RegisterFragment : Fragment() {
             R.layout.fragment_register, container, false
         )
 
+        viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
         auth = FirebaseAuth.getInstance()
 
         val text = "Déjà inscrit ? Se connecter"

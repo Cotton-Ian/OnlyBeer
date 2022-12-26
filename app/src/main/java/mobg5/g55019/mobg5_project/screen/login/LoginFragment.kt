@@ -1,6 +1,5 @@
 package mobg5.g55019.mobg5_project.screen.login
 
-import android.content.ContentValues
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -8,7 +7,6 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,15 +16,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var factory : LoginViewModelFactory
-    private lateinit var viewModel: LoginViewModel
     private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
@@ -37,8 +32,7 @@ class LoginFragment : Fragment() {
             inflater,
             R.layout.fragment_login, container, false
         )
-        factory = LoginViewModelFactory(this.requireContext())
-        viewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
+
         auth = FirebaseAuth.getInstance()
 
         binding.loginButton.setOnClickListener {
