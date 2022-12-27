@@ -2,34 +2,29 @@ package mobg5.g55019.mobg5_project.screen.home
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
-import android.content.ContentValues.TAG
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.ColorStateList
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
-import androidx.fragment.app.Fragment
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentSwipeBinding
-import mobg5.g55019.mobg5_project.model.Beer
-import android.net.ConnectivityManager
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 
 class SwipeFragment : Fragment() {
 
     private lateinit var binding: FragmentSwipeBinding
-    private val db = FirebaseFirestore.getInstance()
-    private var beers: MutableList<Beer> = mutableListOf()
+    private lateinit var viewModel: SwipeViewModel
     private val auth = FirebaseAuth.getInstance()
     private val SWIPE_THRESHOLD = 100
     private val SWIPE_VELOCITY_THRESHOLD = 100
@@ -40,7 +35,10 @@ class SwipeFragment : Fragment() {
                     context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
                 val activeNetworkInfo = connectivityManager.activeNetworkInfo
                 if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
-                    getDataFromDatabaseUser()
+                    if(viewModel.getBeersSize() == 0){
+                        Log.d("testDebug", "Connexion ON, je pull les bières")
+                        viewModel.getDataFromDatabaseUser(auth)
+                    }
                     setUpLikeButton()
                     setUpDislikeButton()
                     setUpSwipe()
@@ -54,8 +52,8 @@ class SwipeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Enregistrez le BroadcastReceiver pour recevoir les événements de changement de connectivité
+
         val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         context?.registerReceiver(monBroadcastReceiver, filter)
     }
@@ -78,9 +76,22 @@ class SwipeFragment : Fragment() {
             R.layout.fragment_swipe, container, false
         )
 
+        viewModel = ViewModelProvider(this)[SwipeViewModel::class.java]
+
+        viewModel.noMoreBeer.observe(viewLifecycleOwner) { noMoreBeer ->
+            if (noMoreBeer) {
+                noMoreBeer()
+            }
+        }
+
+        viewModel.setUpSmallConstraintLayout.observe(viewLifecycleOwner) { setUpSmallConstraintLayout ->
+            if (setUpSmallConstraintLayout) {
+                setUpSmallConstraintLayout()
+            }
+        }
+
         setUpColor()
         if(connexionInternetOn()){
-            getDataFromDatabaseUser()
             setUpLikeButton()
             setUpDislikeButton()
             setUpSwipe()
@@ -99,6 +110,7 @@ class SwipeFragment : Fragment() {
         return activeNetwork != null && activeNetwork.isConnected
     }
 
+    @SuppressLint("SetTextI18n")
     private fun displayNoInternet(){
         binding.beerName.text = "Pas de connexion internet"
         binding.shortDesc.text = "Veuillez vous connecter à internet pour pouvoir utiliser l'application"
@@ -120,7 +132,7 @@ class SwipeFragment : Fragment() {
 
             override fun onAnimationEnd(animation: Animation) {
                 // Cette méthode est appelée lorsque l'animation se termine
-                dislike()
+                viewModel.dislike()
             }
 
             override fun onAnimationRepeat(animation: Animation) {
@@ -142,7 +154,7 @@ class SwipeFragment : Fragment() {
 
             override fun onAnimationEnd(animation: Animation) {
                 // Cette méthode est appelée lorsque l'animation se termine
-                like()
+                viewModel.like(auth)
             }
 
             override fun onAnimationRepeat(animation: Animation) {
@@ -178,58 +190,10 @@ class SwipeFragment : Fragment() {
         }
     }
 
-    private fun getDataFromDatabaseUser(){
-        /*
-        val docRef = db.collection("/Beer")
-        // Créez une requête qui filtre les documents où le champ "favorite" est égal à false
-        val query = docRef.whereEqualTo("Favourite", false)
-        query.get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    addBeerInList(document.data)
-                    //Log.d("testQuery", "${document.id} => ${document.data}")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w("testQuery", "Error getting documents.", exception)
-            }
-            .addOnCompleteListener {
-                //Nothing
-            }*/
 
-        val query = db.collection("/User").document(auth.uid.toString())
-        query.get()
-            .addOnSuccessListener { result ->
-                val beerList = result.data?.get("Beers") as MutableList<String>
-                getDataFromDatabaseBeer(beerList)
-            }
-            .addOnFailureListener { exception ->
-                Log.d("testQuery", "Error getting documents.", exception)
-            }
-    }
 
-    private fun getDataFromDatabaseBeer(beerNameList: MutableList<String>){
-        //java.lang.IllegalArgumentException: Invalid Query. A non-empty array is required for 'not_in' filters.
-        beerNameList.add(" ")
 
-        val query = db.collection("/Beer").whereNotIn("BeerName", beerNameList)
-        query.get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    addBeerInList(document.data)
-                    //Log.d("testQuery", "${document.id} => ${document.data}")
-                }
 
-            }
-            .addOnFailureListener { exception ->
-                Log.w("testQuery", "Error getting documents.", exception)
-            }
-            .addOnCompleteListener {
-                if(beers.size == 0) {
-                    noMoreBeer()
-                }
-            }
-    }
 
     private fun setUpColor(){
         val bottomNav = activity?.findViewById<View>(R.id.bottom_navigation)
@@ -254,116 +218,58 @@ class SwipeFragment : Fragment() {
     //FAUT AJOUTER LE BeerName et pas le nom du document
     private fun setUpLikeButton(){
         binding.likeBtn.setOnClickListener {
-            like()
-        }
-    }
-
-    private fun like(){
-        if(beers.size > 0){
-            val userRef = db.collection("User").document(auth.uid.toString())
-            userRef.update("Beers", FieldValue.arrayUnion(beers[0].name))
-                .addOnSuccessListener { Log.d(TAG, "Beer added to beers array") }
-                .addOnFailureListener { e -> Log.w(TAG, "Error adding beer to beers array", e) }
-            beers.removeAt(0)
-            if(beers.size == 0){
-                noMoreBeer()
-            }
-            else{
-                setUpSmallConstraintLayout()
-            }
-        }
-        else{
-            noMoreBeer()
+            viewModel.like(auth)
         }
     }
 
     private fun setUpDislikeButton(){
         binding.dislikeBtn.setOnClickListener {
-            dislike()
+            viewModel.dislike()
         }
     }
 
-    private fun dislike(){
-        //Toast.makeText(context, beers.size.toString(), Toast.LENGTH_SHORT).show()
-        if(beers.size > 0){
-            beers.removeAt(0)
-            if(beers.size == 0){
-                noMoreBeer()
-
-            }
-            else{
-                setUpSmallConstraintLayout()
-            }
-        }
-        else{
-            noMoreBeer()
-        }
-    }
-
+    @SuppressLint("SetTextI18n")
     private fun noMoreBeer(){
         binding.beerName.text = "No more beer"
         binding.shortDesc.text = "No more beer"
         binding.beerImage.setImageResource(R.drawable.empty_view)
     }
 
-
-    private fun addBeerInList(beer : Map<String, Any>){
-        val name = beer["BeerName"].toString()
-        val brewery = beer["Brewery"].toString()
-        val country = beer["Country"].toString()
-        val shortDescription = beer["ShortDesc"].toString()
-        val longDescription = beer["LongDesc"].toString()
-        val alcoholMin = beer["AlcoholMin"].toString().toDouble()
-        val alcoholMax = beer["AlcoholMax"].toString().toDouble()
-        val color = beer["Color"].toString()
-        val imageUrl = beer["ImageUrl"].toString()
-        val type = beer["Type"].toString()
-
-        beers.add(Beer(name, brewery, country, shortDescription, longDescription, alcoholMin,
-            alcoholMax, color, imageUrl, type))
-
-        if(beers.size == 1){
-            setUpSmallConstraintLayout()
-        }
-
-    }
-
     private fun setUpSmallConstraintLayout(){
-        if(beers.size > 0){
-            binding.beerName.text = beers[0].name
-            binding.shortDesc.text = beers[0].shortDescription
-            Glide.with(this).load(beers[0].imageUrl).into(binding.beerImage)
+        if(viewModel.getBeersSize() > 0){
+            val beer = viewModel.getBeer()
+            binding.beerName.text = beer.name
+            binding.shortDesc.text = beer.shortDescription
+            Glide.with(this).load(beer.imageUrl).into(binding.beerImage)
         }
     }
-
-
-    fun insertChimayRouge() {
-        Toast.makeText(context, "Chimay Rouge ajoutée à vos favoris", Toast.LENGTH_SHORT).show()
-
-        val db = FirebaseFirestore.getInstance()
-
-        val data = hashMapOf(
-            "AlcoholMax" to 8.5,
-            "AlcoholMin" to 8.5,
-            "BeerName" to "Orval Trappist Ale",
-            "Brewery" to "Abbaye Notre-Dame d'Orval",
-            "Color" to "Blonde",
-            "Country" to "Belgique",
-            "LongDesc" to "Orval Trappist Ale est une bière blonde belge produite par l'Abbaye Notre-Dame d'Orval. Elle est brassée avec des maltes et des houblons de qualité supérieure, et est refermentée en bouteille avec une levure sauvage. Avec une teneur en alcool de 8,5%, Orval Trappist Ale est une bière complexe et aromatique, avec des notes de fruits, de levure et de houblon. Elle est également connue pour son goût légèrement amer, grâce à sa recette originale qui inclut du houblon noble et du houblon américain. Orval Trappist Ale est une bière de choix pour les amateurs de bières trappistes et de bières de fermentation haute.",
-            "ShortDesc" to "Orval Trappist Ale est une bière blonde belge à 8,5% d'alcool.",
-            "Type" to "Bière belge de type Trappiste",
-            "ImageUrl" to "https://firebasestorage.googleapis.com/v0/b/mobg5-onlybeer.appspot.com/o/Orval-Trappist-Beer.jpg?alt=media&token=0e0560b2-50aa-4abf-8b83-8998179156f1"
-        )
-
-        // Insérez les données dans la collection "beers" de votre base de données
-        db.collection("Beer").document("Orval Trappist Ale")
-            .set(data)
-            .addOnSuccessListener { Log.d(TAG, "Document Delirium Tremens successfully written!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
-
-        Toast.makeText(context, "Delirium Tremens ajoutée à vos favoris", Toast.LENGTH_SHORT).show()
-    }
-
-
-
 }
+
+/**
+fun insertChimayRouge() {
+Toast.makeText(context, "Chimay Rouge ajoutée à vos favoris", Toast.LENGTH_SHORT).show()
+
+val db = FirebaseFirestore.getInstance()
+
+val data = hashMapOf(
+"AlcoholMax" to 8.5,
+"AlcoholMin" to 8.5,
+"BeerName" to "Orval Trappist Ale",
+"Brewery" to "Abbaye Notre-Dame d'Orval",
+"Color" to "Blonde",
+"Country" to "Belgique",
+"LongDesc" to "Orval Trappist Ale est une bière blonde belge produite par l'Abbaye Notre-Dame d'Orval. Elle est brassée avec des maltes et des houblons de qualité supérieure, et est refermentée en bouteille avec une levure sauvage. Avec une teneur en alcool de 8,5%, Orval Trappist Ale est une bière complexe et aromatique, avec des notes de fruits, de levure et de houblon. Elle est également connue pour son goût légèrement amer, grâce à sa recette originale qui inclut du houblon noble et du houblon américain. Orval Trappist Ale est une bière de choix pour les amateurs de bières trappistes et de bières de fermentation haute.",
+"ShortDesc" to "Orval Trappist Ale est une bière blonde belge à 8,5% d'alcool.",
+"Type" to "Bière belge de type Trappiste",
+"ImageUrl" to "https://firebasestorage.googleapis.com/v0/b/mobg5-onlybeer.appspot.com/o/Orval-Trappist-Beer.jpg?alt=media&token=0e0560b2-50aa-4abf-8b83-8998179156f1"
+)
+
+// Insérez les données dans la collection "beers" de votre base de données
+db.collection("Beer").document("Orval Trappist Ale")
+.set(data)
+.addOnSuccessListener { Log.d(TAG, "Document Delirium Tremens successfully written!") }
+.addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+
+Toast.makeText(context, "Delirium Tremens ajoutée à vos favoris", Toast.LENGTH_SHORT).show()
+}
+ */
