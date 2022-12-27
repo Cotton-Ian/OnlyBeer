@@ -10,7 +10,6 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -20,9 +19,9 @@ import com.google.firebase.firestore.SetOptions
 
 class RegisterViewModel : ViewModel() {
     private var seConnecter : SpannableString
-    private val mAccountCreated = MutableLiveData<Boolean>()
-    private val mErrorMessage = MutableLiveData<String>()
-    //private var auth: FirebaseAuth = FirebaseAuth.getInstance()
+    val mAccountCreated = MutableLiveData<Boolean>()
+    val mErrorMessage = MutableLiveData<String>()
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     init {
         val text = "Déjà inscrit ? Se connecter"
@@ -58,7 +57,7 @@ class RegisterViewModel : ViewModel() {
      * Quand un user s'inscrit, je lui crée un doc dans la collection user qui permettra de connaitre
      * les bières qui like
      */
-    fun addInDbForBeer(auth : FirebaseAuth) {
+    private fun addInDbForBeer(auth : FirebaseAuth) {
         val db = FirebaseFirestore.getInstance()
         db.collection("User").document(auth.uid.toString())
             .set(mapOf("Beers" to emptyList<String>()), SetOptions.merge())
@@ -66,7 +65,7 @@ class RegisterViewModel : ViewModel() {
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error user collection", e) }
     }
 
-    fun createAccount(email: String?, password: String?, auth: FirebaseAuth) {
+    fun createAccount(email: String?, password: String?) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email!!, password!!)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -77,15 +76,5 @@ class RegisterViewModel : ViewModel() {
                 }
             }
     }
-
-    fun getAccountCreated(): LiveData<Boolean> {
-        return mAccountCreated
-    }
-
-    fun getErrorMessage(): LiveData<String> {
-        return mErrorMessage
-    }
-
-
 
 }
