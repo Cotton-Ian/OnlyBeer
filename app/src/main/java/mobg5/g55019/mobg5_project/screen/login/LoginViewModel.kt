@@ -11,6 +11,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 
+/**
+ * A ViewModel that handles the login process for the app.
+ */
 class LoginViewModel : ViewModel() {
 
     // LiveData pour suivre l'état de la connexion
@@ -23,6 +26,15 @@ class LoginViewModel : ViewModel() {
     val error: LiveData<String>
         get() = errorMessage
 
+    /**
+     * Attempts to log in the user with the given email and password using FirebaseAuth.
+     * If the login is successful, the value of isConnected is set to true.
+     * Otherwise, the value of isConnected is set to false and the value of error is set to the error message.
+     *
+     * @param email the email of the user
+     * @param password the password of the user
+     * @param auth the FirebaseAuth object to use for the login
+     */
     fun login(email: String, password: String, auth : FirebaseAuth) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -36,6 +48,12 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Returns a SpannableString with the text "Pas encore de compte ? S'inscrire" in which the text "S'inscrire" is
+     * bold and has a color of #DDFF0059.
+     *
+     * @return a SpannableString with the text "Pas encore de compte ? S'inscrire"
+     */
     fun setTextView() : SpannableString{
         val text = "Pas encore de compte ? S'inscrire"
         val spannableString = SpannableString(text)

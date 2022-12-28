@@ -12,8 +12,21 @@ import mobg5.g55019.mobg5_project.databinding.FragmentBeerBinding
 import mobg5.g55019.mobg5_project.informations.BeerInformationFragment
 import mobg5.g55019.mobg5_project.model.Beer
 
+/**
+ * ViewHolder class for displaying a beer in a RecyclerView.
+ *
+ * @param binding the data binding object for the layout of the ViewHolder
+ */
 class BeerViewHolder(private val binding: FragmentBeerBinding) : RecyclerView.ViewHolder(binding.root) {
 
+    /**
+     * Binds the provided beer to the ViewHolder.
+     *
+     * This method updates the text and image of the ViewHolder to reflect the properties of the provided beer. It also
+     * sets up a click listener for the ViewHolder that navigates to the BeerInformationFragment when clicked.
+     *
+     * @param beer the beer to bind to the ViewHolder
+     */
     fun bind(beer: Beer) {
         binding.beerName.text = beer.name
         binding.beerDescription.text = beer.shortDescription

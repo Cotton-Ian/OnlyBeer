@@ -17,6 +17,9 @@ import com.google.firebase.auth.FirebaseAuth
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentFavouriteBinding
 
+/**
+ * Fragment class for displaying a list of the user's favorite beers.
+ */
 class FavouriteFragment : Fragment() {
     private lateinit var binding: FragmentFavouriteBinding
     private lateinit var viewModel: FavouriteViewModel
@@ -36,6 +39,13 @@ class FavouriteFragment : Fragment() {
         }
     }
 
+    /**
+     * Called to do initial creation of a fragment.
+     *
+     * This is called after onAttach(Activity) and before onCreateView(LayoutInflater, ViewGroup, Bundle).
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Enregistrez le BroadcastReceiver pour recevoir les événements de changement de connectivité
@@ -43,6 +53,11 @@ class FavouriteFragment : Fragment() {
         context?.registerReceiver(monBroadcastReceiver, filter)
     }
 
+    /**
+     * Called when the fragment is no longer in use.
+     *
+     * This is called after onStop() and before onDetach().
+     */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -51,7 +66,21 @@ class FavouriteFragment : Fragment() {
     }
 
 
-
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     *
+     * This is optional, and non-graphical fragments can return null (which is the default implementation).
+     *
+     * This will be called between onCreate(Bundle) and onActivityCreated(Bundle).
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     *                  The fragment should not add the view itself, but this can be used to generate the
+     *                  LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     *
+     * @return Return the View for the fragment's UI, or null.
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

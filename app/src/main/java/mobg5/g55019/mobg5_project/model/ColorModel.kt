@@ -1,5 +1,10 @@
 package mobg5.g55019.mobg5_project.model
 
+/**
+ * Enumeration representing the colors that a beer can have.
+ *
+ * Each enum value has a hex code representing the color.
+ */
 enum class ColorModel(val hex: String) {
     BLONDE("#dbc7a0"),
     BRUNE("#7d3a15"),

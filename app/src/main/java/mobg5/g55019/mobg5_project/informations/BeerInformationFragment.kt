@@ -27,10 +27,25 @@ import mobg5.g55019.mobg5_project.databinding.FragmentBeerInformationBinding
 import mobg5.g55019.mobg5_project.model.Beer
 import mobg5.g55019.mobg5_project.model.ColorModel
 
+/**
+ * A fragment that displays information about a beer.
+ *
+ * @param Beer the beer object to display information about
+ */
+
 class BeerInformationFragment : Fragment() {
     private lateinit var binding: FragmentBeerInformationBinding
     private lateinit var currentBeer : Beer
 
+    /**
+     * Called when the fragment's view needs to be created.
+     *
+     * @param inflater the LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container the parent view that the fragment's UI should be attached to
+     * @param savedInstanceState the saved instance state of the fragment
+     *
+     * @return the View for the fragment's UI, or null
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,6 +58,11 @@ class BeerInformationFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Called when the fragment is created.
+     *
+     * @param savedInstanceState the saved instance state of the fragment
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         currentBeer = requireArguments().getSerializable("BEER") as Beer
@@ -71,23 +91,12 @@ class BeerInformationFragment : Fragment() {
     }
 
     /**
-     * val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-    // Demandez à l'utilisateur d'activer le GPS
-    AlertDialog.Builder(context)
-    .setTitle("Géolocalisation désactivée")
-    .setMessage("Voulez-vous activer la géolocalisation ?")
-    .setPositiveButton("Oui") { _, _ ->
-    // Redirigez l'utilisateur vers les paramètres de localisation
-    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-    }
-    .setNegativeButton("Non") { _, _ ->
-    // Annulez l'action
-    }
-    .show()
-    }*/
-
-
+     * Set up the view for the fragment.
+     *
+     * This method loads the beer image, sets the name and long description for the beer, and updates the text for various
+     * text views with information about the beer. The text views are also styled with bold text and, in the case of the
+     * color text view, the text color is updated to match the color of the beer.
+     */
     private fun setUpView() {
         // Image Loading
         Glide.with(this).load(currentBeer.imageUrl)
@@ -129,48 +138,13 @@ class BeerInformationFragment : Fragment() {
         }
     }
 
-
-    /*
-    private fun setUpView(){
-        var colonPosition = 0
-
-        //Image Loading
-        Glide.with(this).load(currentBeer.imageUrl)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .override(400, 400)
-            .into(binding.beerImage)
-
-        binding.beername.text = currentBeer.name
-        binding.longDescTV.text = currentBeer.longDescription
-
-        var spannable = SpannableString(binding.typeTV.text.toString().plus(currentBeer.type))
-        colonPosition = spannable.indexOf(":")
-        spannable.setSpan(StyleSpan(Typeface.BOLD), 0, colonPosition + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        binding.typeTV.text = spannable
-
-        //Color for the type of color
-        spannable = SpannableString(binding.colorTV.text.toString().plus(currentBeer.color))
-        val color = colorFinder(currentBeer.color)
-        val colorSpan = ForegroundColorSpan(Color.parseColor(color))
-        colonPosition = spannable.indexOf(":")
-        spannable.setSpan(colorSpan, spannable.length - currentBeer.color.length,
-            spannable.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannable.setSpan(StyleSpan(Typeface.BOLD), 0, colonPosition + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        binding.colorTV.text = spannable
-
-        spannable = SpannableString(binding.countryTV.text.toString().plus(currentBeer.country))
-        colonPosition = spannable.indexOf(":")
-        spannable.setSpan(StyleSpan(Typeface.BOLD), 0, colonPosition + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        binding.countryTV.text = spannable
-
-        spannable = SpannableString(binding.breweryTV.text.toString().plus(currentBeer.brewery))
-        colonPosition = spannable.indexOf(":")
-        spannable.setSpan(StyleSpan(Typeface.BOLD), 0, colonPosition + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        binding.breweryTV.text = spannable
-    }
-    */
-
-
+    /**
+     * Find the hex code for the specified color.
+     *
+     * @param color the color to find the hex code for
+     *
+     * @return the hex code for the color, or the default hex code if the color is not found
+     */
     private fun colorFinder(color :String): String{
         return when (color.uppercase()) {
             ColorModel.BLONDE.name -> ColorModel.BLONDE.hex

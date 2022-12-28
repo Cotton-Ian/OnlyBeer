@@ -13,13 +13,26 @@ import com.google.firebase.auth.FirebaseAuth
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentLoginBinding
 
+/**
+ * A Fragment that allows the user to log in to the app using their email and password.
+ */
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
     private lateinit var viewModel: LoginViewModel
     private val auth = FirebaseAuth.getInstance()
 
-
+    /**
+     * Sets up the layout of the fragment and sets up listeners for the login button and the "Create an account" text view.
+     * If the login is successful, the user is redirected to the swipe fragment. If there is an error, a toast message
+     * with the error message is displayed. If the user is already logged in, they are redirected to the swipe fragment.
+     *
+     * @param inflater the LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container the parent view that the fragment's UI should be attached to
+     * @param savedInstanceState the saved state of the fragment
+     *
+     * @return the View for the fragment's UI
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,6 +78,10 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
+
+    /**
+     * If the user is already logged in, they are redirected to the swipe fragment.
+     */
     override fun onStart() {
         super.onStart()
         if(auth.currentUser != null){

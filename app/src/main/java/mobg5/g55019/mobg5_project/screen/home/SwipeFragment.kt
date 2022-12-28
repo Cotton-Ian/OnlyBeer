@@ -21,6 +21,10 @@ import com.google.firebase.auth.FirebaseAuth
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentSwipeBinding
 
+/**
+ * A Fragment class that displays a beer and allows the user to like or dislike it by swiping left or right.
+ * It also has a BroadcastReceiver that listens for connectivity changes and updates the UI accordingly.
+ */
 class SwipeFragment : Fragment() {
 
     private lateinit var binding: FragmentSwipeBinding
@@ -50,6 +54,12 @@ class SwipeFragment : Fragment() {
         }
     }
 
+    /**
+     * Registers the monBroadcastReceiver BroadcastReceiver to listen for connectivity changes
+     * when the fragment is created.
+     *
+     * @param savedInstanceState a Bundle containing the state of the fragment
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Enregistrez le BroadcastReceiver pour recevoir les événements de changement de connectivité
@@ -58,6 +68,10 @@ class SwipeFragment : Fragment() {
         context?.registerReceiver(monBroadcastReceiver, filter)
     }
 
+
+    /**
+     * Unregisters the monBroadcastReceiver BroadcastReceiver when the fragment is destroyed.
+     */
     override fun onDestroy() {
         super.onDestroy()
 
@@ -65,7 +79,15 @@ class SwipeFragment : Fragment() {
         context?.unregisterReceiver(monBroadcastReceiver)
     }
 
-
+    /**
+     * Inflates the fragment layout and initializes the binding and view model, as well as sets up
+     * the behavior for observing changes in the view model and handling connectivity changes.
+     *
+     * @param inflater           the LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container          if non-null, this is the parent view that the fragment's UI should be attached to
+     * @param savedInstanceState if non-null, this fragment is being re-constructed from a previous saved state as given here
+     * @return the View for the fragment's UI, or null
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -104,18 +126,30 @@ class SwipeFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Checks if the device is connected to the internet.
+     *
+     * @return true if the device is connected to the internet, false otherwise
+     */
     private fun connexionInternetOn(): Boolean {
         val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetworkInfo
         return activeNetwork != null && activeNetwork.isConnected
     }
 
+    /**
+     * Displays a message indicating that the device is not connected to the internet.
+     */
     @SuppressLint("SetTextI18n")
     private fun displayNoInternet(){
         binding.beerName.text = "Pas de connexion internet"
         binding.shortDesc.text = "Veuillez vous connecter à internet pour pouvoir utiliser l'application"
     }
 
+    /**
+     * Sets up the swipe gesture on the beer card view. When the card is swiped left, the dislike method
+     * in the view model is called. When the card is swiped right, the like method in the view model is called.
+     */
     @SuppressLint("ClickableViewAccessibility")
     private fun setUpSwipe(){
         val translateAnimationLeft = TranslateAnimation(
@@ -190,11 +224,11 @@ class SwipeFragment : Fragment() {
         }
     }
 
-
-
-
-
-
+    /**
+    * Sets up the colors for the bottom navigation bar.
+    * The color of the navigation bar is white, the color for the disabled state is blue,
+    * the color for the unchecked state is green, and the color for the pressed state is also green.
+    */
     private fun setUpColor(){
         val bottomNav = activity?.findViewById<View>(R.id.bottom_navigation)
         val colors = intArrayOf(
@@ -215,19 +249,32 @@ class SwipeFragment : Fragment() {
         bottomNav?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
     }
 
-    //FAUT AJOUTER LE BeerName et pas le nom du document
+    /**
+     * Sets up the "Like" button in the user interface.
+     * When the button is clicked, the "like" method of the ViewModel is called with the
+     * authentication object as an argument.
+     */
     private fun setUpLikeButton(){
         binding.likeBtn.setOnClickListener {
             viewModel.like(auth)
         }
     }
 
+    /**
+     * Sets up the "Dislike" button in the user interface.
+     * When the button is clicked, the "dislike" method of the ViewModel is called.
+     */
     private fun setUpDislikeButton(){
         binding.dislikeBtn.setOnClickListener {
             viewModel.dislike()
         }
     }
 
+    /**
+     * Displays a message and an image indicating that there are no more beers available.
+     * The beer name and short description are set to "No more beer" and the image is set to a
+     * predefined drawable.
+     */
     @SuppressLint("SetTextI18n")
     private fun noMoreBeer(){
         binding.beerName.text = "No more beer"
@@ -235,6 +282,11 @@ class SwipeFragment : Fragment() {
         binding.beerImage.setImageResource(R.drawable.empty_view)
     }
 
+    /**
+     * Sets up the small constraint layout with the name, short description, and image of a beer.
+     * If there are more beers available in the ViewModel, the name, short description, and image
+     * of the current beer are displayed.
+     */
     private fun setUpSmallConstraintLayout(){
         if(viewModel.getBeersSize() > 0){
             val beer = viewModel.getBeer()

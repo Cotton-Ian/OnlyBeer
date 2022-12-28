@@ -13,12 +13,25 @@ import androidx.navigation.findNavController
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentRegisterBinding
 
-
+/**
+ * A Fragment that allows the user to create an account using their email and password.
+ */
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
     private lateinit var viewModel : RegisterViewModel
 
+    /**
+     * Sets up the layout of the fragment and sets up listeners for the "Create an account" button and the "Already have
+     * an account? Log in" text view. If the account creation is successful, the user is redirected to the login fragment.
+     * If there is an error, a toast message with the error message is displayed.
+     *
+     * @param inflater the LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container the parent view that the fragment's UI should be attached to
+     * @param savedInstanceState the saved state of the fragment
+     *
+     * @return the View for the fragment's UI
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,6 +49,10 @@ class RegisterFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Sets up the "Create an account" button. If the account creation is successful, the user is redirected to the login
+     * fragment. If there is an error, a toast message with the error message is displayed.
+     */
     private fun setUpButtonRegister(){
         viewModel.mAccountCreated.observe(viewLifecycleOwner) { mAccountCreated ->
             if (mAccountCreated) {
@@ -61,41 +78,13 @@ class RegisterFragment : Fragment() {
 
                 viewModel.createAccount(email, password)
 
-                /*
-                auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity()) { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(context, "Register !", Toast.LENGTH_SHORT).show()
-                        viewModel.addInDbForBeer(auth)
-                        view?.findNavController()?.navigate(R.id.action_registerFragment_to_loginFragment)
-                    } else {
-                        Toast.makeText(context, "Error : " + task.exception!!.message , Toast.LENGTH_SHORT).show()
-                    }
-                }
-                 */
-
             }
         }
     }
 
     /**
-     * val viewModel = ViewModelProviders.of(this).get(RegisterViewModel::class.java)
-
-    viewModel.accountCreated.observe(this, Observer { accountCreated ->
-    if (accountCreated) {
-    Toast.makeText(context, "Account created!", Toast.LENGTH_SHORT).show()
-    view?.findNavController()?.navigate(R.id.action_registerFragment_to_loginFragment)
-    }
-    })
-
-    viewModel.errorMessage.observe(this, Observer { errorMessage ->
-    if (errorMessage != null) {
-    Toast.makeText(context, "Error: $errorMessage", Toast.LENGTH_SHORT).show()
-    }
-    })
-
-    viewModel.createAccount(email, password)
+     * Sets up the "Already have an account? Log in" text view. When clicked, the user is redirected to the login fragment.
      */
-
     private fun setUpTv(){
         binding.seConnecterTextView.text = viewModel.getloginTv()
 

@@ -16,13 +16,20 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
-
+/**
+ * A ViewModel that handles the creation of an account using email and password. It also provides a LiveData object
+ * to indicate if the account creation was successful or if there was an error, and another LiveData object to hold the
+ * error message if there was an error.
+ */
 class RegisterViewModel : ViewModel() {
     private var seConnecter : SpannableString
     val mAccountCreated = MutableLiveData<Boolean>()
     val mErrorMessage = MutableLiveData<String>()
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    /**
+     * Initializes the "Already have an account? Log in" text view with a bold and color-coded text.
+     */
     init {
         val text = "Déjà inscrit ? Se connecter"
         val spannableString = SpannableString(text)
@@ -33,14 +40,16 @@ class RegisterViewModel : ViewModel() {
         seConnecter = spannableString
     }
 
+    /**
+     * Returns the "Already have an account? Log in" text view.
+     *
+     * @return the SpannableString for the "Already have an account? Log in" text view
+     */
     fun getloginTv() : SpannableString{
         return seConnecter
     }
 
-    /**
-     * Vérifie l'email est valide et si le mot de passe et la confirmation du mot de passe sont
-     * valides
-     */
+
     fun informationValid(mail : String, password : String, passwordConfirm: String ,context : Context?): Boolean {
         if(!android.util.Patterns.EMAIL_ADDRESS.matcher(mail).matches()){
             Toast.makeText(context, "This mail is not valid !", Toast.LENGTH_SHORT).show()
@@ -54,8 +63,9 @@ class RegisterViewModel : ViewModel() {
     }
 
     /**
-     * Quand un user s'inscrit, je lui crée un doc dans la collection user qui permettra de connaitre
-     * les bières qui like
+     * Adds a new document in the "User" collection for the authenticated user with an empty "Beers" field.
+     *
+     * @param auth the authenticated user
      */
     private fun addInDbForBeer(auth : FirebaseAuth) {
         val db = FirebaseFirestore.getInstance()
@@ -65,6 +75,14 @@ class RegisterViewModel : ViewModel() {
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error user collection", e) }
     }
 
+    /**
+     * Creates a new account with the given email and password using FirebaseAuth. If the account creation is successful,
+     * the "User" collection is updated with a new document for the authenticated user with an empty "Beers" field. If
+     * there is an error, the error message is stored in the mErrorMessage LiveData object.
+     *
+     * @param email the email for the new account
+     * @param password the password for the new account
+     */
     fun createAccount(email: String?, password: String?) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email!!, password!!)
             .addOnCompleteListener { task ->
