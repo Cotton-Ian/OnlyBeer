@@ -9,20 +9,20 @@ dans nos favoris où on peut y voir une description plus détaillée ainsi que l
 
 ### Fonctionnalités de base : 
 
-- Page de login/register via adresse mail
-- Page principale qui affiche une bière ainsi qu'une description brève.
-- Système de like/dislike via swipe et/ou par bouton
-- Page contenant les favoris (bières likées).
-- Page détaillées de la bière avec une description plus précise ainsi que la position des bars qui nous permettent d'y gouter.   
+- Page de login/register via adresse mail (DONE)
+- Page principale qui affiche une bière ainsi qu'une description brève. (DONE)
+- Système de like/dislike via swipe et/ou par bouton (DONE)
+- Page contenant les favoris (bières likées). (DONE)
+- Page détaillées de la bière avec une description plus précise ainsi que la position des bars qui nous permettent d'y gouter. (DONE, EDIT -> bouton redirigeant vers google map avec les informations nécessaire)  
 - Page avec les paramètres pour se déconnecter, les réglages du gps,... (itération 2)
 - Via les paramètres, pouvoir faire une demande d'ajout de bière (itération 2)
 
 ### Fonctionnalités technique : 
 
-- Utilisation d'une database en ligne (via Firebase)
-- Gestion des utilisateurs
-- Utilisation d'une google map
-- Utilisation du GPS
+- Utilisation d'une database en ligne (via Firebase) (DONE)
+- Gestion des utilisateurs (DONE)
+- Utilisation d'une google map (DONE, EDIT -> utilisation de l'application google map)
+- Utilisation du GPS (DONE)
 - Utilisation de la gallerie de l'utilisateur (itération 2)
 - Utilisation de google ads / google play ads (itération 2)
 - Utilisation de l'appareil photo (itération 2)
