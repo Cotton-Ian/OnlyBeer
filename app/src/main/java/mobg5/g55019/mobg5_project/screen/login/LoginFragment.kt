@@ -142,16 +142,22 @@ class LoginFragment : Fragment() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val dso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), dso)
-        mGoogleAPIClient = GoogleApiClient.Builder(requireActivity())
-            .enableAutoManage(requireActivity()) { }
-            .addApi(Auth.GOOGLE_SIGN_IN_API, dso)
-            .build()
+        try {
+            val dso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+            mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), dso)
+            mGoogleAPIClient = GoogleApiClient.Builder(requireActivity())
+                .enableAutoManage(requireActivity()) { }
+                .addApi(Auth.GOOGLE_SIGN_IN_API, dso)
+                .build()
+        }
+        catch (e: Exception){
+            Log.e("LoginFragment", "Error: $e")
+        }
     }
+
 
     /**
      * This method starts the process of signing in with Google.

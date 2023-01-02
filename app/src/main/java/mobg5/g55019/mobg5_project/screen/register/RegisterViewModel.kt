@@ -69,8 +69,9 @@ class RegisterViewModel : ViewModel() {
      */
     private fun addInDbForBeer(auth : FirebaseAuth) {
         val db = FirebaseFirestore.getInstance()
+        val usernameValue = FirebaseAuth.getInstance().uid?.substring(0, 10)
         db.collection("User").document(auth.uid.toString())
-            .set(mapOf("Beers" to emptyList<String>()), SetOptions.merge())
+            .set(mapOf("Beers" to emptyList<String>(), "username" to usernameValue, "profilImageUrl" to "", "profileBannerUrl" to "", "description" to ""), SetOptions.merge())
             .addOnSuccessListener { Log.d(ContentValues.TAG, "User added in collection") }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error user collection", e) }
     }
