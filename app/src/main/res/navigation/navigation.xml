@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_swipeFragment_to_favouriteFragment"
             app:destination="@id/favouriteFragment" />
+        <action
+            android:id="@+id/action_swipeFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/favouriteFragment"
@@ -52,6 +55,12 @@
             app:destination="@id/beerInformationFragment"
             app:popUpTo="@id/favouriteFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_favouriteFragment_to_swipeFragment"
+            app:destination="@id/swipeFragment" />
+        <action
+            android:id="@+id/action_favouriteFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/beerInformationFragment"
@@ -67,6 +76,19 @@
             app:destination="@id/favouriteFragment" />
         <action
             android:id="@+id/action_beerInformationFragment_to_swipeFragment"
+            app:destination="@id/swipeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="mobg5.g55019.mobg5_project.screen.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings"
+        >
+        <action
+            android:id="@+id/action_settingsFragment_to_favouriteFragment"
+            app:destination="@id/favouriteFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_swipeFragment"
             app:destination="@id/swipeFragment" />
     </fragment>
 

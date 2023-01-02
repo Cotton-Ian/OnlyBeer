@@ -65,8 +65,6 @@ class FavouriteViewModel : ViewModel() {
                 Log.w("testQuery", "Error getting documents.", exception)
             }
             .addOnCompleteListener {
-                Log.w("testQuery", "GG WP.")
-                Log.w("testQuery", beers.toString())
                 isListFill.value = true
             }
     }

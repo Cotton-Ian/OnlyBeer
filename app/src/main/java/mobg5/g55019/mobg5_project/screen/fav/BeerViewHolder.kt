@@ -38,7 +38,6 @@ class BeerViewHolder(private val binding: FragmentBeerBinding) : RecyclerView.Vi
             .into(binding.beerImage)
 
         binding.cardView.setOnClickListener {view : View ->
-            Log.d("BeerViewHolder", "Clicked on ${beer.name}")
             val args = Bundle()
             args.putSerializable("BEER", beer)
             val fragment = BeerInformationFragment()
