@@ -1,15 +1,20 @@
 package mobg5.g55019.mobg5_project.screen.login
 
+import android.content.ContentValues
 import android.graphics.Color
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 /**
  * A ViewModel that handles the login process for the app.
@@ -63,5 +68,20 @@ class LoginViewModel : ViewModel() {
         spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#DDFF0059")), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         return spannableString
     }
+
+    /**
+     * Adds a new document in the "User" collection for the authenticated user with an empty "Beers" field.
+     *
+     * @param auth the authenticated user
+     */
+    fun addInDbForBeer(auth : FirebaseAuth) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("User").document(auth.uid.toString())
+            .set(mapOf("Beers" to emptyList<String>()), SetOptions.merge())
+            .addOnSuccessListener { Log.d(ContentValues.TAG, "User added in collection") }
+            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error user collection", e) }
+    }
+
+
 
 }

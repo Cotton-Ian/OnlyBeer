@@ -61,7 +61,14 @@
 
         <meta-data
             android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+            android:resource="@array/preloaded_fonts"
+            />
+
+        <activity android:name=".screen.login.LoginFragment" android:exported="false">
+            <meta-data
+                android:name="com.google.android.gms.webclient_id"
+                android:value="@string/default_web_client_id" />
+        </activity>
     </application>
 
 </manifest>
