@@ -26,7 +26,7 @@ dans nos favoris où on peut y voir une description plus détaillée ainsi que l
 - Utilisation de la gallerie de l'utilisateur (itération 2)
 - Utilisation de google ads / google play ads (itération 2)
 - Utilisation de l'appareil photo (itération 2)
-- Login via compte Google (itération 2)
+- Login via compte Google (itération 2) (DONE)
 
 ### Prototype itération 1: 
 
