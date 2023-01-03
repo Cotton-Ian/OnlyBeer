@@ -325,8 +325,6 @@ class SettingsFragment : Fragment(){
         viewModel.pushImageBannerOnFirebase(selectedImage)
     }
 
-
-
     /**
      * Checks if the device is connected to the internet.
      *
