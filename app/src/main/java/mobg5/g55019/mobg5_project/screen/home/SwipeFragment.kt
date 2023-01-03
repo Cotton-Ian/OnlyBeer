@@ -296,32 +296,3 @@ class SwipeFragment : Fragment() {
         }
     }
 }
-
-/**
-fun insertChimayRouge() {
-Toast.makeText(context, "Chimay Rouge ajoutée à vos favoris", Toast.LENGTH_SHORT).show()
-
-val db = FirebaseFirestore.getInstance()
-
-val data = hashMapOf(
-"AlcoholMax" to 8.5,
-"AlcoholMin" to 8.5,
-"BeerName" to "Orval Trappist Ale",
-"Brewery" to "Abbaye Notre-Dame d'Orval",
-"Color" to "Blonde",
-"Country" to "Belgique",
-"LongDesc" to "Orval Trappist Ale est une bière blonde belge produite par l'Abbaye Notre-Dame d'Orval. Elle est brassée avec des maltes et des houblons de qualité supérieure, et est refermentée en bouteille avec une levure sauvage. Avec une teneur en alcool de 8,5%, Orval Trappist Ale est une bière complexe et aromatique, avec des notes de fruits, de levure et de houblon. Elle est également connue pour son goût légèrement amer, grâce à sa recette originale qui inclut du houblon noble et du houblon américain. Orval Trappist Ale est une bière de choix pour les amateurs de bières trappistes et de bières de fermentation haute.",
-"ShortDesc" to "Orval Trappist Ale est une bière blonde belge à 8,5% d'alcool.",
-"Type" to "Bière belge de type Trappiste",
-"ImageUrl" to "https://firebasestorage.googleapis.com/v0/b/mobg5-onlybeer.appspot.com/o/Orval-Trappist-Beer.jpg?alt=media&token=0e0560b2-50aa-4abf-8b83-8998179156f1"
-)
-
-// Insérez les données dans la collection "beers" de votre base de données
-db.collection("Beer").document("Orval Trappist Ale")
-.set(data)
-.addOnSuccessListener { Log.d(TAG, "Document Delirium Tremens successfully written!") }
-.addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
-
-Toast.makeText(context, "Delirium Tremens ajoutée à vos favoris", Toast.LENGTH_SHORT).show()
-}
- */

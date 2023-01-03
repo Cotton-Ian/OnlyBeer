@@ -2,16 +2,6 @@ package mobg5.g55019.mobg5_project.screen.login
 
 import android.content.ContentValues.TAG
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.RippleDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
-import android.graphics.drawable.shapes.RectShape
-import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -228,56 +218,3 @@ class LoginFragment : Fragment() {
     }
 
 }
-
-
-/**
- * Backup :
-class LoginFragment : Fragment() {
-
-private lateinit var binding: FragmentLoginBinding
-private lateinit var auth: FirebaseAuth
-private lateinit var viewModel: LoginViewModel
-
-override fun onCreateView(
-inflater: LayoutInflater, container: ViewGroup?,
-savedInstanceState: Bundle?
-): View? {
-binding = DataBindingUtil.inflate(
-inflater,
-R.layout.fragment_login, container, false
-)
-
-auth = FirebaseAuth.getInstance()
-
-binding.loginButton.setOnClickListener {
-val email = binding.emailArea.text.toString()
-val password = binding.pwdField.text.toString()
-auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity()) { task ->
-if (task.isSuccessful) {
-Toast.makeText(context, "Login !", Toast.LENGTH_SHORT).show()
-view?.findNavController()?.navigate(R.id.action_loginFragment_to_swipeFragment)
-} else {
-Toast.makeText(context, "Wrong email or password !", Toast.LENGTH_SHORT).show()
-}
-}
-}
-
-
-binding.inscriptionTextview.text = viewModel.setTextView()
-
-binding.inscriptionTextview.setOnClickListener {
-view?.findNavController()?.navigate(R.id.action_loginFragment_to_registerFragment)
-}
-
-return binding.root
-}
-
-override fun onStart() {
-super.onStart()
-if(auth.currentUser != null){
-view?.findNavController()?.navigate(R.id.action_loginFragment_to_swipeFragment)
-}
-}
-
-}
- */

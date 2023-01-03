@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -19,11 +18,17 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentSettingsBinding
+import java.io.ByteArrayOutputStream
 import java.io.IOException
+
 
 class SettingsFragment : Fragment(){
     private lateinit var binding: FragmentSettingsBinding
@@ -32,14 +37,10 @@ class SettingsFragment : Fragment(){
     private val RESULT_LOAD_IMG = 2
     private val PERMISSION_REQUEST_STORAGE = 1
     private val REQUEST_CAMERA_PERMISSION = 3
-
-    /**
-     * TODO : l'image view doit être un rond
-     * TODO : l'image doit être adaptté à l'image view
-     * TODO : l'image doit être enregistré dans la base de donnée
-     * TODO : l'image doit être save en local pour pouvoir être affiché même si l'utilisateur n'est pas connecté
-     */
-
+    private var imageProfilTV: Boolean = false
+    private var imageBannerTV: Boolean = false
+    private val db = FirebaseFirestore.getInstance()
+    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +59,35 @@ class SettingsFragment : Fragment(){
 
         setUpImageBtn()
 
+        setImageProfilBanner()
+
         return binding.root
+    }
+
+    private fun setImageProfilBanner(){
+        val db = FirebaseFirestore.getInstance()
+        val query = db.collection("/User").document(FirebaseAuth.getInstance().uid.toString())
+        query.get()
+            .addOnSuccessListener { result ->
+                val profilImageUrl = result.data?.get("profilImageUrl") as String
+                val profileBannerUrl = result.data?.get("profileBannerUrl") as String
+                if(profilImageUrl != ""){
+                    Glide.with(this)
+                        .load(profilImageUrl)
+                        .transform(CircleCrop())
+                        .into(binding.imageButton)
+                }
+                if(profileBannerUrl != ""){
+                    Glide.with(this)
+                        .load(profileBannerUrl)
+                        .override(binding.imageBanner.width, binding.imageBanner.height)
+                        .centerCrop()
+                        .into(binding.imageBanner)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("testQuery", "Error getting documents.", exception)
+            }
     }
 
     private fun checkPermission(){
@@ -76,26 +105,38 @@ class SettingsFragment : Fragment(){
 
     private fun setUpImageBtn(){
         binding.imageButton.setOnClickListener {
-            val options =
-                arrayOf<CharSequence>("Prendre une photo", "Choisir depuis la galerie", "Annuler")
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("Ajouter une image")
-            builder.setItems(options) { dialog, item ->
-                when {
-                    options[item] == "Prendre une photo" -> {
-                        takePicture()
-                    }
-                    options[item] == "Choisir depuis la galerie" -> {
-                        // Ouvrez la galerie
-                        openGallery()
-                    }
-                    options[item] == "Annuler" -> {
-                        dialog.dismiss()
-                    }
+            imageProfilTV = true
+            selectImage()
+        }
+
+        binding.imageBanner.setOnClickListener {
+            imageBannerTV = true
+            selectImage()
+        }
+    }
+
+    private fun selectImage(){
+        val options =
+            arrayOf<CharSequence>("Prendre une photo", "Choisir depuis la galerie", "Annuler")
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Ajouter une image")
+        builder.setItems(options) { dialog, item ->
+            when {
+                options[item] == "Prendre une photo" -> {
+                    takePicture()
+                }
+                options[item] == "Choisir depuis la galerie" -> {
+                    // Ouvrez la galerie
+                    openGallery()
+                }
+                options[item] == "Annuler" -> {
+                    dialog.dismiss()
+                    imageBannerTV = false
+                    imageProfilTV = false
                 }
             }
-            builder.show()
         }
+        builder.show()
     }
 
     private fun takePicture(){
@@ -116,10 +157,15 @@ class SettingsFragment : Fragment(){
             try {
                 val imageStream = filePath?.let { context?.contentResolver?.openInputStream(it) }
                 val selectedImage = BitmapFactory.decodeStream(imageStream)
-                binding.imageButton.setImageBitmap(selectedImage)
-                //binding.imageButton.background = BitmapDrawable(resources, selectedImage)
-                //binding.imageButton.setImageBitmap(MediaStore.Images.Media.getBitmap(activity?.contentResolver, filePath))
-                // Récupérez et traitez l'image sélectionnée ici
+
+                if (imageProfilTV){
+                    glideImageProfil(selectedImage)
+                    pushImageProfilOnFirebase(selectedImage)
+                } else if (imageBannerTV){
+                    glideImageBanner(selectedImage)
+                    pushImageBannerOnFirebase(selectedImage)
+                }
+
             } catch (e: IOException) {
                 Log.e("SettingsFragment", "Erreur de chargement de l'image", e)
                 e.printStackTrace()
@@ -128,12 +174,34 @@ class SettingsFragment : Fragment(){
         else{
             if(requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK){
                 val imageBitmap = data?.extras?.get("data") as Bitmap
-                binding.imageButton.setImageBitmap(imageBitmap)
-            }
-            else{
+                if(imageProfilTV){
+                    glideImageProfil(imageBitmap)
+                    pushImageProfilOnFirebase(imageBitmap)
+                } else if (imageBannerTV){
+                    glideImageBanner(imageBitmap)
+                    pushImageBannerOnFirebase(imageBitmap)
+                }
             }
         }
+        imageBannerTV = false
+        imageProfilTV = false
     }
+
+    private fun glideImageProfil(imageBitmap: Bitmap){
+        Glide.with(this)
+            .load(imageBitmap)
+            .transform(CircleCrop())
+            .into(binding.imageButton)
+    }
+
+    private fun glideImageBanner(imageBitmap: Bitmap){
+        Glide.with(this)
+            .load(imageBitmap)
+            .override(binding.imageBanner.width, binding.imageBanner.height)
+            .centerCrop()
+            .into(binding.imageBanner)
+    }
+
 
     private fun checkUsername(){
         val db = FirebaseFirestore.getInstance()
@@ -148,12 +216,76 @@ class SettingsFragment : Fragment(){
                 binding.profilTV.text = result.get("username").toString()
             }
         }
+    }
 
+    private fun pushImageProfilOnFirebase(selectedImage : Bitmap){
+        val storageRef = storage.reference
+        val uid = FirebaseAuth.getInstance().uid.toString()
+        val imageRef: StorageReference = storageRef.child("profilPicture/$uid.jpg")
+        val baos = ByteArrayOutputStream()
+        selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data: ByteArray = baos.toByteArray()
+        val uploadTask = imageRef.putBytes(data)
+        uploadTask.addOnFailureListener {
+            Log.e("SettingsFragment", "Erreur d'upload de la bannière", it)
+        }.addOnCompleteListener{ taskSnapshot ->
+            if (taskSnapshot.isSuccessful) {
+                imageRef.downloadUrl.addOnSuccessListener { uri ->
+                    // Got the download URL for 'images/selectedImage.jpg'
+                    val downloadUrl = uri.toString()
+                    Log.d("SettingsFragment", "downloadUrl: $downloadUrl")
+                    updateProfile(downloadUrl)
+                }
+            }
+        }
+    }
 
-        /**
-         * firestore.collection("users").document(user.uid)
-        .collection("trainings").document(docId).collection("favorites")
-         */
+    private fun pushImageBannerOnFirebase(selectedImage : Bitmap){
+        val storageRef = storage.reference
+        val uid = FirebaseAuth.getInstance().uid.toString()
+        val imageRef: StorageReference = storageRef.child("bannerPicture/$uid.jpg")
+        val baos = ByteArrayOutputStream()
+        selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data: ByteArray = baos.toByteArray()
+        val uploadTask = imageRef.putBytes(data)
+        uploadTask.addOnFailureListener {
+            Log.e("SettingsFragment", "Erreur d'upload de l'image", it)
+        }.addOnCompleteListener{ taskSnapshot ->
+            if (taskSnapshot.isSuccessful) {
+                imageRef.downloadUrl.addOnSuccessListener { uri ->
+                    // Got the download URL for 'images/selectedImage.jpg'
+                    val downloadUrl = uri.toString()
+                    Log.d("SettingsFragment", "downloadUrl: $downloadUrl")
+                    updateBanner(downloadUrl)
+                }
+            }
+        }
+    }
+
+    private fun updateProfile(url: String){
+        val query = db.collection("User")
+            .document(FirebaseAuth.getInstance().uid.toString())
+
+        query.update("profilImageUrl", url)
+            .addOnSuccessListener {
+                Log.d("SettingsFragment", "DocumentSnapshot successfully updated!")
+            }
+            .addOnFailureListener { e ->
+                Log.w("SettingsFragment", "Error updating document", e)
+            }
+    }
+
+    private fun updateBanner(url: String){
+        val query = db.collection("User")
+            .document(FirebaseAuth.getInstance().uid.toString())
+
+        query.update("profileBannerUrl", url)
+            .addOnSuccessListener {
+                Log.d("SettingsFragment", "DocumentSnapshot successfully updated!")
+            }
+            .addOnFailureListener { e ->
+                Log.w("SettingsFragment", "Error updating document", e)
+            }
     }
 
 }
