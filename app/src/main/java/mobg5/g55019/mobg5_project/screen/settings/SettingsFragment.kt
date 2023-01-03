@@ -13,6 +13,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -29,6 +31,13 @@ import mobg5.g55019.mobg5_project.databinding.FragmentSettingsBinding
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
+/**
+ * TODO : deconnexion
+ * TODO : Description de l'utilisateur
+ * TODO : viewModel
+ * TODO : repository
+ * TODO : gestion de la connexion
+ */
 
 class SettingsFragment : Fragment(){
     private lateinit var binding: FragmentSettingsBinding
@@ -57,11 +66,80 @@ class SettingsFragment : Fragment(){
 
         checkUsername()
 
+        checkDescription()
+
         setUpImageBtn()
 
         setImageProfilBanner()
 
+        setUpModifyBtn()
+
+        setModifyForDescription()
+
         return binding.root
+    }
+
+    private fun setUpModifyBtn(){
+        binding.modifyButton.setOnClickListener{
+
+            val customView = LayoutInflater.from(context).inflate(R.layout.alert, null)
+            val builder = AlertDialog.Builder(context)
+            builder.setView(customView)
+            val cancelButton = customView.findViewById<Button>(R.id.button_cancel)
+            val okButton  = customView.findViewById<Button>(R.id.button_ok)
+            val dialog = builder.create()
+            dialog.show()
+
+            okButton.setOnClickListener{
+                val username = customView.findViewById<EditText>(R.id.edit_text).text.toString()
+                if(username != ""){
+                    val newText = username.trim()
+                    if (newText.isNotBlank()) {
+                        binding.profilTV.text = newText
+                        FirebaseAuth.getInstance().currentUser?.let { it1 ->
+                            db.collection("User").document(
+                                it1.uid).update("username", newText)
+                        }
+                    }
+                    dialog.dismiss()
+                }
+            }
+
+            cancelButton.setOnClickListener{
+                dialog.cancel()
+            }
+        }
+    }
+
+    private fun setModifyForDescription(){
+        binding.buttonDescriptionModify.setOnClickListener{
+            val customView = LayoutInflater.from(context).inflate(R.layout.alert_for_description, null)
+            val builder = AlertDialog.Builder(context)
+            builder.setView(customView)
+            val cancelButton = customView.findViewById<Button>(R.id.button_cancel)
+            val okButton  = customView.findViewById<Button>(R.id.button_ok)
+            val dialog = builder.create()
+            dialog.show()
+
+            okButton.setOnClickListener{
+                val description = customView.findViewById<EditText>(R.id.edit_text).text.toString()
+                if(description != ""){
+                    val newText = description.trim()
+                    if (newText.isNotBlank()) {
+                        binding.description.text = newText
+                        FirebaseAuth.getInstance().currentUser?.let { it1 ->
+                            db.collection("User").document(
+                                it1.uid).update("description", newText)
+                        }
+                    }
+                    dialog.dismiss()
+                }
+            }
+
+            cancelButton.setOnClickListener{
+                dialog.cancel()
+            }
+        }
     }
 
     private fun setImageProfilBanner(){
@@ -214,6 +292,21 @@ class SettingsFragment : Fragment(){
                 binding.profilTV.text = "error"
             } else {
                 binding.profilTV.text = result.get("username").toString()
+            }
+        }
+    }
+
+    private fun checkDescription(){
+        val db = FirebaseFirestore.getInstance()
+        val query = db.collection("User")
+            .document(FirebaseAuth.getInstance().uid.toString())
+
+        query.get().addOnSuccessListener { result ->
+            val desc = result.get("description").toString()
+            if (desc == "null") {
+                binding.description.text = "error"
+            } else {
+                binding.description.text = result.get("description").toString()
             }
         }
     }
