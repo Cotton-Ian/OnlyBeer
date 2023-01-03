@@ -38,7 +38,6 @@ import java.io.IOException
 
 /**
  * TODO : deconnexion
- * TODO : viewModel
  * TODO : repository
  */
 
@@ -96,10 +95,56 @@ class SettingsFragment : Fragment(){
             setUpModifyBtn()
             setModifyForDescription()
             hasBeenInitialize = true
-            Toast.makeText(context, "Connexion internet ON", Toast.LENGTH_SHORT).show()
         }
 
+        setUpObserver()
+
         return binding.root
+    }
+
+    private fun setUpObserver(){
+        viewModel.profilName.observe(viewLifecycleOwner) { profilName ->
+            if (profilName != null) {
+                binding.profilTV.text = profilName
+            }
+        }
+
+        viewModel.descriptionNew.observe(viewLifecycleOwner) { descriptionNew ->
+            if (descriptionNew != null) {
+                binding.description.text = descriptionNew
+            }
+        }
+
+        viewModel.profilImageUrl.observe(viewLifecycleOwner) { profilImageUrl ->
+            if (profilImageUrl != null) {
+                Glide.with(this)
+                    .load(profilImageUrl)
+                    .transform(CircleCrop())
+                    .into(binding.imageButton)
+            }
+        }
+
+        viewModel.profileBannerUrl.observe(viewLifecycleOwner) { profileBannerUrl ->
+            if (profileBannerUrl != null) {
+                Glide.with(this)
+                    .load(profileBannerUrl)
+                    .override(binding.imageBanner.width, binding.imageBanner.height)
+                    .centerCrop()
+                    .into(binding.imageBanner)
+            }
+        }
+
+        viewModel.usernameTV.observe(viewLifecycleOwner) { usernameTV ->
+            if (usernameTV != null) {
+                binding.profilTV.text = usernameTV
+            }
+        }
+
+        viewModel.descTV.observe(viewLifecycleOwner) { descTV ->
+            if (descTV != null) {
+                binding.description.text = descTV
+            }
+        }
     }
 
     /**
@@ -131,34 +176,7 @@ class SettingsFragment : Fragment(){
         binding.modifyButton.setOnClickListener{
 
             if(connexionInternetOn()){
-                val customView = LayoutInflater.from(context).inflate(R.layout.alert, null)
-                val builder = AlertDialog.Builder(context)
-                builder.setView(customView)
-                val cancelButton = customView.findViewById<Button>(R.id.button_cancel)
-                val okButton  = customView.findViewById<Button>(R.id.button_ok)
-                val editText = customView.findViewById<EditText>(R.id.edit_text)
-                editText.setText(binding.profilTV.text)
-                val dialog = builder.create()
-                dialog.show()
-
-                okButton.setOnClickListener{
-                    val username = customView.findViewById<EditText>(R.id.edit_text).text.toString()
-                    if(username != ""){
-                        val newText = username.trim()
-                        if (newText.isNotBlank()) {
-                            binding.profilTV.text = newText
-                            FirebaseAuth.getInstance().currentUser?.let { it1 ->
-                                db.collection("User").document(
-                                    it1.uid).update("username", newText)
-                            }
-                        }
-                        dialog.dismiss()
-                    }
-                }
-
-                cancelButton.setOnClickListener{
-                    dialog.cancel()
-                }
+                viewModel.modifyButton(requireContext(), binding.profilTV.text.toString())
             }
             else{
                 Toast.makeText(context, "Connectez vous à internet", Toast.LENGTH_SHORT).show()
@@ -169,34 +187,7 @@ class SettingsFragment : Fragment(){
     private fun setModifyForDescription(){
         binding.buttonDescriptionModify.setOnClickListener{
             if(connexionInternetOn()){
-                val customView = LayoutInflater.from(context).inflate(R.layout.alert_for_description, null)
-                val builder = AlertDialog.Builder(context)
-                builder.setView(customView)
-                val cancelButton = customView.findViewById<Button>(R.id.button_cancel)
-                val okButton  = customView.findViewById<Button>(R.id.button_ok)
-                val editText = customView.findViewById<EditText>(R.id.edit_text)
-                editText.setText(binding.description.text)
-                val dialog = builder.create()
-                dialog.show()
-
-                okButton.setOnClickListener{
-                    val description = customView.findViewById<EditText>(R.id.edit_text).text.toString()
-                    if(description != ""){
-                        val newText = description.trim()
-                        if (newText.isNotBlank()) {
-                            binding.description.text = newText
-                            FirebaseAuth.getInstance().currentUser?.let { it1 ->
-                                db.collection("User").document(
-                                    it1.uid).update("description", newText)
-                            }
-                        }
-                        dialog.dismiss()
-                    }
-                }
-
-                cancelButton.setOnClickListener{
-                    dialog.cancel()
-                }
+                viewModel.modifyDesc(requireContext(), binding.description.text.toString())
             }
             else{
                 Toast.makeText(context, "Connectez vous à internet", Toast.LENGTH_SHORT).show()
@@ -206,29 +197,7 @@ class SettingsFragment : Fragment(){
 
     private fun setImageProfilBanner(){
         if(connexionInternetOn()){
-            val db = FirebaseFirestore.getInstance()
-            val query = db.collection("/User").document(FirebaseAuth.getInstance().uid.toString())
-            query.get()
-                .addOnSuccessListener { result ->
-                    val profilImageUrl = result.data?.get("profilImageUrl") as String
-                    val profileBannerUrl = result.data?.get("profileBannerUrl") as String
-                    if(profilImageUrl != ""){
-                        Glide.with(this)
-                            .load(profilImageUrl)
-                            .transform(CircleCrop())
-                            .into(binding.imageButton)
-                    }
-                    if(profileBannerUrl != ""){
-                        Glide.with(this)
-                            .load(profileBannerUrl)
-                            .override(binding.imageBanner.width, binding.imageBanner.height)
-                            .centerCrop()
-                            .into(binding.imageBanner)
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Log.d("testQuery", "Error getting documents.", exception)
-                }
+            viewModel.dlAndSetImage()
         }
         else{
             Toast.makeText(context, "Connectez vous à internet", Toast.LENGTH_SHORT).show()
@@ -236,15 +205,7 @@ class SettingsFragment : Fragment(){
     }
 
     private fun checkPermission(){
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // Demandez la permission à l'utilisateur ici
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_STORAGE)
-        }
-
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            // La permission n'est pas accordée, demandez-la à l'utilisateur
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION)
-        }
+        viewModel.checkPermission(requireContext(), requireActivity())
     }
 
 
@@ -349,104 +310,22 @@ class SettingsFragment : Fragment(){
 
 
     private fun checkUsername(){
-        val db = FirebaseFirestore.getInstance()
-        val query = db.collection("User")
-            .document(FirebaseAuth.getInstance().uid.toString())
-
-        query.get().addOnSuccessListener { result ->
-            val username = result.get("username").toString()
-            if (username == "null") {
-                binding.profilTV.text = "error"
-            } else {
-                binding.profilTV.text = result.get("username").toString()
-            }
-        }
+        viewModel.checkUsername()
     }
 
     private fun checkDescription(){
-        val db = FirebaseFirestore.getInstance()
-        val query = db.collection("User")
-            .document(FirebaseAuth.getInstance().uid.toString())
-
-        query.get().addOnSuccessListener { result ->
-            val desc = result.get("description").toString()
-            if (desc == "null") {
-                binding.description.text = "error"
-            } else {
-                binding.description.text = result.get("description").toString()
-            }
-        }
+        viewModel.checkDescription()
     }
 
     private fun pushImageProfilOnFirebase(selectedImage : Bitmap){
-        val storageRef = storage.reference
-        val uid = FirebaseAuth.getInstance().uid.toString()
-        val imageRef: StorageReference = storageRef.child("profilPicture/$uid.jpg")
-        val baos = ByteArrayOutputStream()
-        selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val data: ByteArray = baos.toByteArray()
-        val uploadTask = imageRef.putBytes(data)
-        uploadTask.addOnFailureListener {
-            Log.e("SettingsFragment", "Erreur d'upload de la bannière", it)
-        }.addOnCompleteListener{ taskSnapshot ->
-            if (taskSnapshot.isSuccessful) {
-                imageRef.downloadUrl.addOnSuccessListener { uri ->
-                    // Got the download URL for 'images/selectedImage.jpg'
-                    val downloadUrl = uri.toString()
-                    Log.d("SettingsFragment", "downloadUrl: $downloadUrl")
-                    updateProfile(downloadUrl)
-                }
-            }
-        }
+       viewModel.pushImageProfilOnFirebase(selectedImage)
     }
 
     private fun pushImageBannerOnFirebase(selectedImage : Bitmap){
-        val storageRef = storage.reference
-        val uid = FirebaseAuth.getInstance().uid.toString()
-        val imageRef: StorageReference = storageRef.child("bannerPicture/$uid.jpg")
-        val baos = ByteArrayOutputStream()
-        selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val data: ByteArray = baos.toByteArray()
-        val uploadTask = imageRef.putBytes(data)
-        uploadTask.addOnFailureListener {
-            Log.e("SettingsFragment", "Erreur d'upload de l'image", it)
-        }.addOnCompleteListener{ taskSnapshot ->
-            if (taskSnapshot.isSuccessful) {
-                imageRef.downloadUrl.addOnSuccessListener { uri ->
-                    // Got the download URL for 'images/selectedImage.jpg'
-                    val downloadUrl = uri.toString()
-                    Log.d("SettingsFragment", "downloadUrl: $downloadUrl")
-                    updateBanner(downloadUrl)
-                }
-            }
-        }
+        viewModel.pushImageBannerOnFirebase(selectedImage)
     }
 
-    private fun updateProfile(url: String){
-        val query = db.collection("User")
-            .document(FirebaseAuth.getInstance().uid.toString())
 
-        query.update("profilImageUrl", url)
-            .addOnSuccessListener {
-                Log.d("SettingsFragment", "DocumentSnapshot successfully updated!")
-            }
-            .addOnFailureListener { e ->
-                Log.w("SettingsFragment", "Error updating document", e)
-            }
-    }
-
-    private fun updateBanner(url: String){
-        val query = db.collection("User")
-            .document(FirebaseAuth.getInstance().uid.toString())
-
-        query.update("profileBannerUrl", url)
-            .addOnSuccessListener {
-                Log.d("SettingsFragment", "DocumentSnapshot successfully updated!")
-            }
-            .addOnFailureListener { e ->
-                Log.w("SettingsFragment", "Error updating document", e)
-            }
-    }
 
     /**
      * Checks if the device is connected to the internet.
