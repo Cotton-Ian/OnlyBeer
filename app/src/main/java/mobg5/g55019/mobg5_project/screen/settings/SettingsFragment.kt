@@ -3,10 +3,14 @@ package mobg5.g55019.mobg5_project.screen.settings
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -15,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -33,10 +38,8 @@ import java.io.IOException
 
 /**
  * TODO : deconnexion
- * TODO : Description de l'utilisateur
  * TODO : viewModel
  * TODO : repository
- * TODO : gestion de la connexion
  */
 
 class SettingsFragment : Fragment(){
@@ -50,6 +53,28 @@ class SettingsFragment : Fragment(){
     private var imageBannerTV: Boolean = false
     private val db = FirebaseFirestore.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
+    private var hasBeenInitialize : Boolean = false
+    private val monBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == ConnectivityManager.CONNECTIVITY_ACTION) {
+                val connectivityManager =
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val activeNetworkInfo = connectivityManager.activeNetworkInfo
+                if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
+                    if(!hasBeenInitialize){
+                        checkPermission()
+                        checkUsername()
+                        checkDescription()
+                        setUpImageBtn()
+                        setImageProfilBanner()
+                        setUpModifyBtn()
+                        setModifyForDescription()
+                        hasBeenInitialize = true
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,111 +86,153 @@ class SettingsFragment : Fragment(){
         )
 
         viewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
-
         checkPermission()
 
-        checkUsername()
-
-        checkDescription()
-
-        setUpImageBtn()
-
-        setImageProfilBanner()
-
-        setUpModifyBtn()
-
-        setModifyForDescription()
+        if(connexionInternetOn()){
+            checkUsername()
+            checkDescription()
+            setUpImageBtn()
+            setImageProfilBanner()
+            setUpModifyBtn()
+            setModifyForDescription()
+            hasBeenInitialize = true
+            Toast.makeText(context, "Connexion internet ON", Toast.LENGTH_SHORT).show()
+        }
 
         return binding.root
+    }
+
+    /**
+     * Registers the monBroadcastReceiver BroadcastReceiver to listen for connectivity changes
+     * when the fragment is created.
+     *
+     * @param savedInstanceState a Bundle containing the state of the fragment
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Enregistrez le BroadcastReceiver pour recevoir les événements de changement de connectivité
+
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        context?.registerReceiver(monBroadcastReceiver, filter)
+    }
+
+
+    /**
+     * Unregisters the monBroadcastReceiver BroadcastReceiver when the fragment is destroyed.
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Désenregistrez le BroadcastReceiver lorsque votre fragment est détruit
+        context?.unregisterReceiver(monBroadcastReceiver)
     }
 
     private fun setUpModifyBtn(){
         binding.modifyButton.setOnClickListener{
 
-            val customView = LayoutInflater.from(context).inflate(R.layout.alert, null)
-            val builder = AlertDialog.Builder(context)
-            builder.setView(customView)
-            val cancelButton = customView.findViewById<Button>(R.id.button_cancel)
-            val okButton  = customView.findViewById<Button>(R.id.button_ok)
-            val dialog = builder.create()
-            dialog.show()
+            if(connexionInternetOn()){
+                val customView = LayoutInflater.from(context).inflate(R.layout.alert, null)
+                val builder = AlertDialog.Builder(context)
+                builder.setView(customView)
+                val cancelButton = customView.findViewById<Button>(R.id.button_cancel)
+                val okButton  = customView.findViewById<Button>(R.id.button_ok)
+                val editText = customView.findViewById<EditText>(R.id.edit_text)
+                editText.setText(binding.profilTV.text)
+                val dialog = builder.create()
+                dialog.show()
 
-            okButton.setOnClickListener{
-                val username = customView.findViewById<EditText>(R.id.edit_text).text.toString()
-                if(username != ""){
-                    val newText = username.trim()
-                    if (newText.isNotBlank()) {
-                        binding.profilTV.text = newText
-                        FirebaseAuth.getInstance().currentUser?.let { it1 ->
-                            db.collection("User").document(
-                                it1.uid).update("username", newText)
+                okButton.setOnClickListener{
+                    val username = customView.findViewById<EditText>(R.id.edit_text).text.toString()
+                    if(username != ""){
+                        val newText = username.trim()
+                        if (newText.isNotBlank()) {
+                            binding.profilTV.text = newText
+                            FirebaseAuth.getInstance().currentUser?.let { it1 ->
+                                db.collection("User").document(
+                                    it1.uid).update("username", newText)
+                            }
                         }
+                        dialog.dismiss()
                     }
-                    dialog.dismiss()
+                }
+
+                cancelButton.setOnClickListener{
+                    dialog.cancel()
                 }
             }
-
-            cancelButton.setOnClickListener{
-                dialog.cancel()
+            else{
+                Toast.makeText(context, "Connectez vous à internet", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun setModifyForDescription(){
         binding.buttonDescriptionModify.setOnClickListener{
-            val customView = LayoutInflater.from(context).inflate(R.layout.alert_for_description, null)
-            val builder = AlertDialog.Builder(context)
-            builder.setView(customView)
-            val cancelButton = customView.findViewById<Button>(R.id.button_cancel)
-            val okButton  = customView.findViewById<Button>(R.id.button_ok)
-            val dialog = builder.create()
-            dialog.show()
+            if(connexionInternetOn()){
+                val customView = LayoutInflater.from(context).inflate(R.layout.alert_for_description, null)
+                val builder = AlertDialog.Builder(context)
+                builder.setView(customView)
+                val cancelButton = customView.findViewById<Button>(R.id.button_cancel)
+                val okButton  = customView.findViewById<Button>(R.id.button_ok)
+                val editText = customView.findViewById<EditText>(R.id.edit_text)
+                editText.setText(binding.description.text)
+                val dialog = builder.create()
+                dialog.show()
 
-            okButton.setOnClickListener{
-                val description = customView.findViewById<EditText>(R.id.edit_text).text.toString()
-                if(description != ""){
-                    val newText = description.trim()
-                    if (newText.isNotBlank()) {
-                        binding.description.text = newText
-                        FirebaseAuth.getInstance().currentUser?.let { it1 ->
-                            db.collection("User").document(
-                                it1.uid).update("description", newText)
+                okButton.setOnClickListener{
+                    val description = customView.findViewById<EditText>(R.id.edit_text).text.toString()
+                    if(description != ""){
+                        val newText = description.trim()
+                        if (newText.isNotBlank()) {
+                            binding.description.text = newText
+                            FirebaseAuth.getInstance().currentUser?.let { it1 ->
+                                db.collection("User").document(
+                                    it1.uid).update("description", newText)
+                            }
                         }
+                        dialog.dismiss()
                     }
-                    dialog.dismiss()
+                }
+
+                cancelButton.setOnClickListener{
+                    dialog.cancel()
                 }
             }
-
-            cancelButton.setOnClickListener{
-                dialog.cancel()
+            else{
+                Toast.makeText(context, "Connectez vous à internet", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun setImageProfilBanner(){
-        val db = FirebaseFirestore.getInstance()
-        val query = db.collection("/User").document(FirebaseAuth.getInstance().uid.toString())
-        query.get()
-            .addOnSuccessListener { result ->
-                val profilImageUrl = result.data?.get("profilImageUrl") as String
-                val profileBannerUrl = result.data?.get("profileBannerUrl") as String
-                if(profilImageUrl != ""){
-                    Glide.with(this)
-                        .load(profilImageUrl)
-                        .transform(CircleCrop())
-                        .into(binding.imageButton)
+        if(connexionInternetOn()){
+            val db = FirebaseFirestore.getInstance()
+            val query = db.collection("/User").document(FirebaseAuth.getInstance().uid.toString())
+            query.get()
+                .addOnSuccessListener { result ->
+                    val profilImageUrl = result.data?.get("profilImageUrl") as String
+                    val profileBannerUrl = result.data?.get("profileBannerUrl") as String
+                    if(profilImageUrl != ""){
+                        Glide.with(this)
+                            .load(profilImageUrl)
+                            .transform(CircleCrop())
+                            .into(binding.imageButton)
+                    }
+                    if(profileBannerUrl != ""){
+                        Glide.with(this)
+                            .load(profileBannerUrl)
+                            .override(binding.imageBanner.width, binding.imageBanner.height)
+                            .centerCrop()
+                            .into(binding.imageBanner)
+                    }
                 }
-                if(profileBannerUrl != ""){
-                    Glide.with(this)
-                        .load(profileBannerUrl)
-                        .override(binding.imageBanner.width, binding.imageBanner.height)
-                        .centerCrop()
-                        .into(binding.imageBanner)
+                .addOnFailureListener { exception ->
+                    Log.d("testQuery", "Error getting documents.", exception)
                 }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("testQuery", "Error getting documents.", exception)
-            }
+        }
+        else{
+            Toast.makeText(context, "Connectez vous à internet", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun checkPermission(){
@@ -379,6 +446,17 @@ class SettingsFragment : Fragment(){
             .addOnFailureListener { e ->
                 Log.w("SettingsFragment", "Error updating document", e)
             }
+    }
+
+    /**
+     * Checks if the device is connected to the internet.
+     *
+     * @return true if the device is connected to the internet, false otherwise
+     */
+    private fun connexionInternetOn(): Boolean {
+        val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetworkInfo
+        return activeNetwork != null && activeNetwork.isConnected
     }
 
 }
