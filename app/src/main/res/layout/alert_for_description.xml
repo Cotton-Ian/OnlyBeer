@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="8dp"
-        android:text="Modifier votre description"
+        android:text="@string/modifier_votre_description"
         android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:background="@drawable/custom_edittext2"
-        android:hint="Saisissez votre description"
+        android:hint="@string/saisissez_votre_description"
         android:inputType="textMultiLine"
         android:maxLength="160"
         android:paddingVertical="16dp"
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="@drawable/rounded_button_dislike"
-            android:text="Annuler"
+            android:text="@string/annuler"
             android:textColor="@color/white" />
 
         <Button
@@ -58,7 +58,7 @@
             android:layout_margin="8dp"
             android:background="@drawable/rounded_button"
 
-            android:text="Valider"
+            android:text="@string/valider"
             android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

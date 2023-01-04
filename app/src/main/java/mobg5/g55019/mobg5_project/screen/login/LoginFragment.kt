@@ -132,6 +132,10 @@ class LoginFragment : Fragment() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializeGoogleSignIn()
+    }
+
+    private fun initializeGoogleSignIn(){
         try {
             val dso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -142,9 +146,12 @@ class LoginFragment : Fragment() {
                 .enableAutoManage(requireActivity()) { }
                 .addApi(Auth.GOOGLE_SIGN_IN_API, dso)
                 .build()
+
         }
         catch (e: Exception){
             Log.e("LoginFragment", "Error: $e")
+            activity?.let { mGoogleAPIClient.stopAutoManage(it) }
+            mGoogleAPIClient.disconnect()
         }
     }
 
@@ -153,8 +160,19 @@ class LoginFragment : Fragment() {
      * This method starts the process of signing in with Google.
      */
     private fun signIn() {
-        val signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleAPIClient)
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        if(::mGoogleAPIClient.isInitialized  && ::mGoogleSignInClient.isInitialized) {
+            val signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleAPIClient)
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
+        else{
+            initializeGoogleSignIn()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.let { mGoogleAPIClient.stopAutoManage(it) }
+        mGoogleAPIClient.disconnect()
     }
 
     /**
@@ -183,8 +201,6 @@ class LoginFragment : Fragment() {
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
-                Toast.makeText(context, "Error : $e", Toast.LENGTH_SHORT).show()
-
                 // ...
             }
         }
@@ -205,7 +221,7 @@ class LoginFragment : Fragment() {
                     // Sign in success, update UI with the signed-in user's information
                     Toast.makeText(context, "Authentication réussie.", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "signInWithCredential:success")
-                    val user = auth.currentUser
+                    auth.currentUser
                     viewModel.addInDbForBeer(auth)
                     view?.findNavController()?.navigate(R.id.action_loginFragment_to_swipeFragment)
                 } else {

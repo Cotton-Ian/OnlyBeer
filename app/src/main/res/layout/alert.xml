@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/rounded_dialogue"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="8dp"
-        android:text="Modifier votre nom d'utilisateur"
+        android:text="@string/modifier_votre_nom_d_utilisateur"
         android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -23,13 +24,13 @@
         android:layout_height="56dp"
         android:layout_margin="8dp"
         android:background="@drawable/custom_edittext2"
-        android:hint="Saisissez votre nom d'utilisateur"
+        android:hint="@string/saisissez_votre_nom_d_utilisateur"
         android:inputType="text"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textSize="16sp"
         android:maxLength="10"
-        />
+        android:autofillHints="nom d'utilisateur" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,8 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="@drawable/rounded_button_dislike"
-            android:text="Annuler"
-            android:textColor="@color/white" />
+            android:text="@string/annuler"
+            android:textColor="@color/white"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/button_ok"
@@ -53,8 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="@drawable/rounded_button"
-
-            android:text="Valider"
-            android:textColor="@color/white" />
+            android:text="@string/valider"
+            android:textColor="@color/white"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
 </LinearLayout>

@@ -1,7 +1,6 @@
 package mobg5.g55019.mobg5_project.screen.fav
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView

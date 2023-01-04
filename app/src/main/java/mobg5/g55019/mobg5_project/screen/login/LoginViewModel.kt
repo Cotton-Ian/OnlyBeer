@@ -11,7 +11,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -74,12 +73,34 @@ class LoginViewModel : ViewModel() {
      *
      * @param auth the authenticated user
      */
-    fun addInDbForBeer(auth : FirebaseAuth) {
+     fun addInDbForBeer(auth : FirebaseAuth) {
         val db = FirebaseFirestore.getInstance()
-        db.collection("User").document(auth.uid.toString())
-            .set(mapOf("Beers" to emptyList<String>()), SetOptions.merge())
-            .addOnSuccessListener { Log.d(ContentValues.TAG, "User added in collection") }
-            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error user collection", e) }
+        val usernameValue = FirebaseAuth.getInstance().uid?.substring(0, 10)
+
+        var docRef = db.collection("User").document(auth.uid.toString())
+
+        docRef.get().addOnSuccessListener { document ->
+            if (document == null) {
+                db.collection("User").document(auth.uid.toString())
+                    .set(
+                        mapOf(
+                            "Beers" to emptyList<String>(),
+                            "username" to usernameValue,
+                            "profilImageUrl" to "",
+                            "profileBannerUrl" to "",
+                            "description" to ""
+                        ), SetOptions.merge()
+                    )
+                    .addOnSuccessListener { Log.d(ContentValues.TAG, "User added in collection") }
+                    .addOnFailureListener { e ->
+                        Log.w(
+                            ContentValues.TAG,
+                            "Error user collection",
+                            e
+                        )
+                    }
+            }
+        }
     }
 
 

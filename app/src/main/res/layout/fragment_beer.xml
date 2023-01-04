@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
@@ -19,7 +18,8 @@
                 android:id="@+id/beer_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_image_24" />
+                android:src="@drawable/ic_baseline_image_24"
+                android:contentDescription="@string/beer_image" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -1,5 +1,4 @@
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +20,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            android:autofillHints="Votre mail..." />
 
         <EditText
             android:id="@+id/pwdTF"
@@ -39,7 +39,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/emailTF" />
+            app:layout_constraintTop_toBottomOf="@+id/emailTF"
+            android:autofillHints="Votre mot de passe" />
 
         <EditText
             android:id="@+id/pwdConfirmTF"
@@ -57,7 +58,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pwdTF" />
+            app:layout_constraintTop_toBottomOf="@+id/pwdTF"
+            android:autofillHints="Confirmation du mot de passe" />
 
         <TextView
             android:id="@+id/textView2"
@@ -82,7 +84,7 @@
             android:layout_width="199dp"
             android:layout_height="55dp"
             android:layout_margin="30sp"
-            android:text="Register"
+            android:text="@string/register3"
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -96,7 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Déjà inscrit ? Se connecter"
+            android:text="@string/d_j_inscrit_se_connecter"
             android:textColor="#DD989898"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
