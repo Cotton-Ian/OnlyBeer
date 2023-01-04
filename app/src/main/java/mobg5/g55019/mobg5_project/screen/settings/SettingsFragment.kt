@@ -1,13 +1,11 @@
 package mobg5.g55019.mobg5_project.screen.settings
 
-import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
@@ -17,27 +15,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import mobg5.g55019.mobg5_project.R
 import mobg5.g55019.mobg5_project.databinding.FragmentSettingsBinding
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 /**
- * TODO : deconnexion
  * TODO : repository
  */
 
@@ -46,12 +36,8 @@ class SettingsFragment : Fragment(){
     private lateinit var viewModel: SettingsViewModel
     private val CAMERA_REQUEST = 1888
     private val RESULT_LOAD_IMG = 2
-    private val PERMISSION_REQUEST_STORAGE = 1
-    private val REQUEST_CAMERA_PERMISSION = 3
     private var imageProfilTV: Boolean = false
     private var imageBannerTV: Boolean = false
-    private val db = FirebaseFirestore.getInstance()
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
     private var hasBeenInitialize : Boolean = false
     private val monBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -68,6 +54,7 @@ class SettingsFragment : Fragment(){
                         setImageProfilBanner()
                         setUpModifyBtn()
                         setModifyForDescription()
+                        setUpDeconnexion()
                         hasBeenInitialize = true
                     }
                 }
@@ -94,6 +81,7 @@ class SettingsFragment : Fragment(){
             setImageProfilBanner()
             setUpModifyBtn()
             setModifyForDescription()
+            setUpDeconnexion()
             hasBeenInitialize = true
         }
 
@@ -170,6 +158,15 @@ class SettingsFragment : Fragment(){
 
         // Désenregistrez le BroadcastReceiver lorsque votre fragment est détruit
         context?.unregisterReceiver(monBroadcastReceiver)
+    }
+
+    private fun setUpDeconnexion(){
+        binding.deconnexionBtn.setOnClickListener {
+            Toast.makeText(context, "Deconnexion", Toast.LENGTH_SHORT).show()
+            FirebaseAuth.getInstance().signOut()
+            view?.findNavController()?.navigate(R.id.action_settingsFragment_to_loginFragment)
+
+        }
     }
 
     private fun setUpModifyBtn(){

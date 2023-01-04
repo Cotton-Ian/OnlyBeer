@@ -151,8 +151,8 @@ class SettingsViewModel : ViewModel()  {
 
         query.get().addOnSuccessListener { result ->
             val desc = result.get("description").toString()
-            if (desc == "null") {
-                descTV.value = "error"
+            if (desc == "") {
+                descTV.value = "Votre description..."
             } else {
                 descTV.value = result.get("description").toString()
             }

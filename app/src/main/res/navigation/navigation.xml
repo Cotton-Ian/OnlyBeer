@@ -90,6 +90,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_swipeFragment"
             app:destination="@id/swipeFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 
 </navigation>
