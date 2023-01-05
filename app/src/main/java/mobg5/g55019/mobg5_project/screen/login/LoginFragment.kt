@@ -94,6 +94,13 @@ class LoginFragment : Fragment() {
             }
         }
 
+        viewModel.isAccountGoogleCreated.observe(viewLifecycleOwner) { isAccountGoogleCreated ->
+            if (isAccountGoogleCreated) {
+                view?.findNavController()?.navigate(R.id.action_loginFragment_to_swipeFragment)
+            }
+        }
+
+
         binding.inscriptionTextview.text = viewModel.setTextView()
         binding.inscriptionTextview.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_loginFragment_to_registerFragment)
@@ -150,8 +157,10 @@ class LoginFragment : Fragment() {
         }
         catch (e: Exception){
             Log.e("LoginFragment", "Error: $e")
-            activity?.let { mGoogleAPIClient.stopAutoManage(it) }
-            mGoogleAPIClient.disconnect()
+            if(::mGoogleAPIClient.isInitialized  && ::mGoogleSignInClient.isInitialized) {
+                activity?.let { mGoogleAPIClient.stopAutoManage(it) }
+                mGoogleAPIClient.disconnect()
+            }
         }
     }
 
@@ -220,10 +229,10 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Toast.makeText(context, "Authentication réussie.", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, "signInWithCredential:success")
+                    Log.d("googleLoginTest", "signInWithCredential:success")
                     auth.currentUser
                     viewModel.addInDbForBeer(auth)
-                    view?.findNavController()?.navigate(R.id.action_loginFragment_to_swipeFragment)
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)

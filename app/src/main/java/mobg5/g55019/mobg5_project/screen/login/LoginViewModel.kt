@@ -30,6 +30,10 @@ class LoginViewModel : ViewModel() {
     val error: LiveData<String>
         get() = errorMessage
 
+    private val accountGoogleCreated = MutableLiveData<Boolean>()
+    val isAccountGoogleCreated: LiveData<Boolean>
+        get() = accountGoogleCreated
+
     /**
      * Attempts to log in the user with the given email and password using FirebaseAuth.
      * If the login is successful, the value of isConnected is set to true.
@@ -78,29 +82,36 @@ class LoginViewModel : ViewModel() {
         val usernameValue = FirebaseAuth.getInstance().uid?.substring(0, 10)
 
         var docRef = db.collection("User").document(auth.uid.toString())
-
-        docRef.get().addOnSuccessListener { document ->
-            if (document == null) {
-                db.collection("User").document(auth.uid.toString())
-                    .set(
-                        mapOf(
-                            "Beers" to emptyList<String>(),
-                            "username" to usernameValue,
-                            "profilImageUrl" to "",
-                            "profileBannerUrl" to "",
-                            "description" to ""
-                        ), SetOptions.merge()
-                    )
-                    .addOnSuccessListener { Log.d(ContentValues.TAG, "User added in collection") }
-                    .addOnFailureListener { e ->
-                        Log.w(
-                            ContentValues.TAG,
-                            "Error user collection",
-                            e
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    Log.d("googleLoginTest", "existe déjà")
+                    accountGoogleCreated.value = true
+                } else {
+                    Log.d("googleLoginTest", "existe pas, je le crée")
+                    db.collection("User").document(auth.uid.toString())
+                        .set(
+                            mapOf(
+                                "Beers" to emptyList<String>(),
+                                "username" to usernameValue,
+                                "profilImageUrl" to "",
+                                "profileBannerUrl" to "",
+                                "description" to ""
+                            ), SetOptions.merge()
                         )
-                    }
+                        .addOnSuccessListener { Log.d("googleLoginTest", "User added in collection") }
+                        .addOnFailureListener { e ->
+                            Log.w(
+                                "googleLoginTest",
+                                "Error user collection",
+                                e
+                            )
+                        }.addOnCompleteListener {
+                            accountGoogleCreated.value = true
+                            Log.d("googleLoginTest", "Fin de la création")
+                        }
+                }
             }
-        }
     }
 
 
