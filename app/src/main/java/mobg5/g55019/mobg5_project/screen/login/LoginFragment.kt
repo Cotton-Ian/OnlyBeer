@@ -161,6 +161,12 @@ class LoginFragment : Fragment() {
                 activity?.let { mGoogleAPIClient.stopAutoManage(it) }
                 mGoogleAPIClient.disconnect()
             }
+            try {
+                activity?.let { mGoogleAPIClient.stopAutoManage(it) }
+                mGoogleAPIClient.disconnect()
+            }catch (e: Exception){
+                Log.e("LoginFragment", "Error: $e")
+            }
         }
     }
 

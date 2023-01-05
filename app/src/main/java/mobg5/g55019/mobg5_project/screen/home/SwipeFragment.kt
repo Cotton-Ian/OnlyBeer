@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -144,6 +145,7 @@ class SwipeFragment : Fragment() {
     private fun displayNoInternet(){
         binding.beerName.text = "Pas de connexion internet"
         binding.shortDesc.text = "Veuillez vous connecter à internet pour pouvoir utiliser l'application"
+        Toast.makeText(context, "Pas de connexion internet", Toast.LENGTH_SHORT).show()
     }
 
     /**
@@ -166,7 +168,12 @@ class SwipeFragment : Fragment() {
 
             override fun onAnimationEnd(animation: Animation) {
                 // Cette méthode est appelée lorsque l'animation se termine
-                viewModel.dislike()
+                if(connexionInternetOn()){
+                    viewModel.dislike()
+                }
+                else{
+                    displayNoInternet()
+                }
             }
 
             override fun onAnimationRepeat(animation: Animation) {
@@ -188,7 +195,12 @@ class SwipeFragment : Fragment() {
 
             override fun onAnimationEnd(animation: Animation) {
                 // Cette méthode est appelée lorsque l'animation se termine
-                viewModel.like(auth)
+                if(connexionInternetOn()){
+                    viewModel.like(auth)
+                }
+                else{
+                    displayNoInternet()
+                }
             }
 
             override fun onAnimationRepeat(animation: Animation) {
@@ -256,7 +268,12 @@ class SwipeFragment : Fragment() {
      */
     private fun setUpLikeButton(){
         binding.likeBtn.setOnClickListener {
-            viewModel.like(auth)
+            if(connexionInternetOn()){
+                viewModel.like(auth)
+            }
+            else{
+                displayNoInternet()
+            }
         }
     }
 
@@ -266,7 +283,12 @@ class SwipeFragment : Fragment() {
      */
     private fun setUpDislikeButton(){
         binding.dislikeBtn.setOnClickListener {
-            viewModel.dislike()
+            if(connexionInternetOn()){
+                viewModel.dislike()
+            }
+            else{
+                displayNoInternet()
+            }
         }
     }
 
@@ -295,4 +317,6 @@ class SwipeFragment : Fragment() {
             Glide.with(this).load(beer.imageUrl).into(binding.beerImage)
         }
     }
+
+
 }

@@ -59,6 +59,10 @@ class RegisterViewModel : ViewModel() {
             Toast.makeText(context, "Passwords are not the same !", Toast.LENGTH_SHORT).show()
             return false
         }
+        if(password.length < 6){
+            Toast.makeText(context, "Password must be at least 6 characters !", Toast.LENGTH_SHORT).show()
+            return false
+        }
         return true
     }
 
