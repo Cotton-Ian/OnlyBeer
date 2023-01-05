@@ -36,7 +36,6 @@ class LoginFragment : Fragment() {
     private lateinit var viewModel: LoginViewModel
     private val auth = FirebaseAuth.getInstance()
     private lateinit var mGoogleAPIClient: GoogleApiClient
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     private companion object {
         private const val RC_SIGN_IN = 9001
@@ -143,31 +142,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun initializeGoogleSignIn(){
-        try {
-            val dso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
-            mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), dso)
-            mGoogleAPIClient = GoogleApiClient.Builder(requireActivity())
-                .enableAutoManage(requireActivity()) { }
-                .addApi(Auth.GOOGLE_SIGN_IN_API, dso)
-                .build()
-
-        }
-        catch (e: Exception){
-            Log.e("LoginFragment", "Error: $e")
-            if(::mGoogleAPIClient.isInitialized  && ::mGoogleSignInClient.isInitialized) {
-                activity?.let { mGoogleAPIClient.stopAutoManage(it) }
-                mGoogleAPIClient.disconnect()
-            }
-            try {
-                activity?.let { mGoogleAPIClient.stopAutoManage(it) }
-                mGoogleAPIClient.disconnect()
-            }catch (e: Exception){
-                Log.e("LoginFragment", "Error: $e")
-            }
-        }
+        mGoogleAPIClient = GoogleLoginSingleton.getInstance(requireActivity())
     }
 
 
@@ -175,7 +150,7 @@ class LoginFragment : Fragment() {
      * This method starts the process of signing in with Google.
      */
     private fun signIn() {
-        if(::mGoogleAPIClient.isInitialized  && ::mGoogleSignInClient.isInitialized) {
+        if(::mGoogleAPIClient.isInitialized) {
             val signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleAPIClient)
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
